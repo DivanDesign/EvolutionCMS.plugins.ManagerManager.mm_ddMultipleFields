@@ -52,33 +52,8 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		//Стиль превью изображения
 		$stylePrewiew = "max-width:{$imgW}px; max-height:{$imgH}px; margin: 4px 0; cursor: pointer;";
 
-		$tvsMas = array();
-		// Does this page's template use any image or file or text TVs?
-		$tvsTemp = tplUseTvs($mm_current_page['template'], $tvs, 'image');
-		if ($tvsTemp){
-			foreach($tvsTemp as $v){
-				$v['type'] = 'image';
-				array_push($tvsMas,$v);
-			}
-		}
-		$tvsTemp = tplUseTvs($mm_current_page['template'], $tvs, 'file');
-		if ($tvsTemp){
-			foreach($tvsTemp as $v){
-				$v['type'] = 'file';
-				array_push($tvsMas,$v);
-			}
-		}
-		$tvsTemp = tplUseTvs($mm_current_page['template'], $tvs, 'text');
-		if ($tvsTemp){
-			foreach($tvsTemp as $v){
-				$v['type'] = 'text';
-				array_push($tvsMas,$v);
-			}
-		}
-
-		if (count($tvsMas) == 0){
-			return;
-		}
+		$tvsMas = tplUseTvs($mm_current_page['template'], $tvs, 'image,file,text', 'id,type');
+		if ($tvsMas == false){return;}
 		
 		$output .= "// ---------------- mm_ddMultipleFields :: Begin ------------- \n";
 		//General functions
