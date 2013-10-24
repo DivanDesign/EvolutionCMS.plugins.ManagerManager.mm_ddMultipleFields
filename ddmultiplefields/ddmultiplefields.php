@@ -5,7 +5,7 @@
  * 
  * Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
- * @uses ManagerManager plugin 0.5.
+ * @uses ManagerManager plugin 0.5.2.
  *
  * @param $tvs {comma separated string} - Names of TV for which the widget is applying. @required
  * @param $roles {comma separated string} - The roles that the widget is applied to (when this parameter is empty then widget is applied to the all roles). Default: ''.
@@ -56,12 +56,14 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		if ($tvsMas == false){return;}
 		
 		$output .= "// ---------------- mm_ddMultipleFields :: Begin ------------- \n";
+		
+		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'js', 'jquery-ui', '1.10.3');
+		$output .= includeJsCss($widgetDir.'ddmultiplefields.css');
+		
 		//General functions
 		$output .= '
-'.includeJs($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'js', 'jquery-ui', '1.10.3').'
 //Проверяем на всякий случай (если вдруг вызывается пару раз)
 if (!ddMultiple){
-'.includeCss($widgetDir.'ddmultiplefields.css').'
 var ddMultiple = {
 	datePickerOffset: '.$modx->config['datepicker_offset'].',
 	datePickerFormat: "'.$modx->config['datetime_format'].'" + " hh:mm:00",
