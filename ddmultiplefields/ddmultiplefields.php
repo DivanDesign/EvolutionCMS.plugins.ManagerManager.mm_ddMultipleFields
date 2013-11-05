@@ -21,6 +21,9 @@
  * @param $maxRow {integer} - Maximum number of strings. Default: 0 (без лимита).
  * @param $columnsData {separated string} - List of valid values in json format (with “||”). Default: ''.
  * 
+ * @event OnDocFormPrerender
+ * @event OnDocFormRender
+ * 
  * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.4.2
  * 
  * @copyright 2013, DivanDesign
@@ -28,15 +31,23 @@
  */
 
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = ''){
+	if (!useThisRule($roles, $templates)){return;}
+	
 	global $modx, $mm_current_page;
 	$e = &$modx->Event;
 	
-	if ($e->name == 'OnDocFormRender' && useThisRule($roles, $templates)){
-		$output = '';
+	$output = '';
 
-		$site = $modx->config['site_url'];
-		$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
+	$site = $modx->config['site_url'];
+	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
+	
+	if ($e->name == 'OnDocFormPrerender'){
+		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
+		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
+		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields-1.0.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.0');
 		
+		$e->output($output);
+	}else if ($e->name == 'OnDocFormRender'){
 		if ($columnsData){
 			$columnsDataTemp = explode('||', $columnsData);
 			$columnsData = array();
@@ -56,10 +67,6 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		if ($tvsMas == false){return;}
 		
 		$output .= "// ---------------- mm_ddMultipleFields :: Begin ------------- \n";
-		
-		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'js', 'jquery-ui', '1.10.3');
-		$output .= includeJsCss($widgetDir.'ddmultiplefields.css');
-		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields-1.0.js', 'js', 'jquery.ddMM.mm_ddMultipleFields', '1.0');
 		
 		foreach ($tvsMas as $tv){
 			if ($tv['type'] == 'image'){
