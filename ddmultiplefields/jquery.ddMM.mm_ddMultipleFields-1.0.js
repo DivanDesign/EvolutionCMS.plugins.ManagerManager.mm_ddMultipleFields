@@ -3,7 +3,7 @@
  * @version: 1.0 (2013-10-24)
  * 
  * @uses jQuery 1.9.1
- * @uses $.ddMM 1.0
+ * @uses $.ddMM 1.1
  *
  * @copyright 2013, DivanDesign
  * http://www.DivanDesign.biz
@@ -497,7 +497,7 @@ $(function(){
 
 	//Самбмит главной формы
 	$('#mutate').on('submit', function(){
-		$.each($.$.ddMM.mm_ddMultipleFields.instances, function(key){
+		$.each($.ddMM.mm_ddMultipleFields.instances, function(key){
 			$.ddMM.mm_ddMultipleFields.updateTv(key);
 		});
 	});
