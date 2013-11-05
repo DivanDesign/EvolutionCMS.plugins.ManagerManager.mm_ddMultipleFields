@@ -222,7 +222,7 @@ $.ddMM.mm_ddMultipleFields = {
 				}
 			//Если id
 			}else if (_this.instances[id].coloumns[key] == 'id'){
-				$field = _this.makeText(val[key], _this.instances[id].coloumnsTitle[key], _this.instances[id].colWidth[key], $col);
+				$field = _this.makeText(val[key], '', 0, $col);
 				
 				if (!($field.val())){
 					$field.val((new Date).getTime());
