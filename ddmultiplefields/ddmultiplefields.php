@@ -54,7 +54,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 			foreach ($columnsDataTemp as $value){
 				//Евалим знение и записываем результат или исходное значени
 				$eval = @eval($value);
-				$columnsData[] = $eval ? addslashes(json_encode($eval)) : $value;
+				$columnsData[] = $eval ? addslashes(json_encode($eval)) : addslashes($value);
 			}
 			//Сливаем в строку, что бы передать на клиент
 			$columnsData = implode('||', $columnsData);
