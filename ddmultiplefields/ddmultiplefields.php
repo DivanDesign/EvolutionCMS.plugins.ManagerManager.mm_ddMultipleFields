@@ -44,7 +44,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 	if ($e->name == 'OnDocFormPrerender'){
 		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
-		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields-1.0.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.0');
+		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.0');
 		
 		$e->output($output);
 	}else if ($e->name == 'OnDocFormRender'){
