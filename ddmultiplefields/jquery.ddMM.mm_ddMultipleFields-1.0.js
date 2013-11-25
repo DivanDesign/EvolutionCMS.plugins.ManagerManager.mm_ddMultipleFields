@@ -119,9 +119,22 @@ $.ddMM.mm_ddMultipleFields = {
 		//Если есть хоть один заголовок
 		if (_this.instances[id].coloumnsTitle.length > 0){
 			var text = '';
-			//Создадим шапку
+			//Создадим шапку (перебираем именно колонки!)
 			$.each(_this.instances[id].coloumns, function(key, val){
-				text += '<th>' + (_this.instances[id].coloumnsTitle[key] || '') + '</th>';
+				//Если это колонка с id
+				if (val == 'id'){
+					//Вставим пустое значение в массив с заголовками
+					_this.instances[id].coloumnsTitle.splice(key, 0, '');
+					
+					text += '<th style="display: none;"></th>';
+				}else{
+					//Если такого значения нет — сделаем
+					if (!_this.instances[id].coloumnsTitle[key]){
+						_this.instances[id].coloumnsTitle[key] = '';
+					}
+					
+					text += '<th>' + (_this.instances[id].coloumnsTitle[key]) + '</th>';
+				}
 			});
 			
 			$('<tr><th></th>' + text + '<th></th></tr>').appendTo($ddMultipleField);
