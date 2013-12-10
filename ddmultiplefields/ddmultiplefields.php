@@ -1,12 +1,12 @@
 <?php
-/** 
+/**
  * mm_ddMultipleFields
- * @version 4.4.2 (2013-07-02)
+ * @version 4.5 (2013-12-10)
  * 
  * Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
  * @uses ManagerManager plugin 0.6.
- *
+ * 
  * @param $tvs {comma separated string} - Names of TV for which the widget is applying. @required
  * @param $roles {comma separated string} - The roles that the widget is applied to (when this parameter is empty then widget is applied to the all roles). Default: ''.
  * @param $templates {comma separated string} - Templates IDs for which the widget is applying (empty value means the widget is applying to all templates). Default: ''.
@@ -24,7 +24,7 @@
  * @event OnDocFormPrerender
  * @event OnDocFormRender
  * 
- * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.4.2
+ * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.5
  * 
  * @copyright 2013, DivanDesign
  * http://www.DivanDesign.biz
@@ -37,7 +37,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 	$e = &$modx->Event;
 	
 	$output = '';
-
+	
 	$site = $modx->config['site_url'];
 	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
 	
@@ -57,6 +57,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		if ($columnsData){
 			$columnsDataTemp = explode('||', $columnsData);
 			$columnsData = array();
+			
 			foreach ($columnsDataTemp as $value){
 				//Евалим знение и записываем результат или исходное значени
 				$eval = @eval($value);
@@ -65,10 +66,10 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 			//Сливаем в строку, что бы передать на клиент
 			$columnsData = implode('||', $columnsData);
 		}
-
+		
 		//Стиль превью изображения
 		$stylePrewiew = "max-width:{$imgW}px; max-height:{$imgH}px; margin: 4px 0; cursor: pointer;";
-
+		
 		$tvsMas = tplUseTvs($mm_current_page['template'], $tvs, 'image,file,text,email,textarea', 'id,type');
 		if ($tvsMas == false){return;}
 		
@@ -102,11 +103,10 @@ $j("#tv'.$tv['id'].'").mm_ddMultipleFields({
 });
 			';
 		}
-
+		
 		$output .= "\n// ---------------- mm_ddMultipleFields :: End -------------";
-
-		$e->output($output . "\n");
+		
+		$e->output($output."\n");
 	}
-} // end of widget
-
+}
 ?>
