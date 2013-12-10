@@ -1,9 +1,10 @@
 /**
  * jQuery ddMM.mm_ddMultipleFields Plugin
- * @version: 1.0 (2013-10-24)
+ * @version: 1.1 (2013-12-10)
  * 
  * @uses jQuery 1.9.1
- * @uses $.ddMM 1.1
+ * @uses $.ddTools 1.8.1
+ * @uses $.ddMM 1.1.2
  *
  * @copyright 2013, DivanDesign
  * http://www.DivanDesign.biz
@@ -43,6 +44,7 @@ $.ddMM.mm_ddMultipleFields = {
 //		}
 //	}
 	instances: {},
+	richtextWindow: null,
 	//Обновляет мульти-поле, берёт значение из оригинального поля
 	updateField: function(id){
 		var _this = this;
@@ -72,7 +74,7 @@ $.ddMM.mm_ddMultipleFields = {
 			
 			//Перебираем все колонки, закидываем значения в массив
 			$this.find('.ddField').each(function(index){
-				//Если поле с типом id
+				//Если поле с типом id TODO: Какой смысл по всех этих манипуляциях?
 				if (_this.instances[id].coloumns[index] == 'id'){
 					id_field.index = index;
 					id_field.$field = $(this);
@@ -85,12 +87,21 @@ $.ddMM.mm_ddMultipleFields = {
 					//Обнуляем значение
 					id_field.$field.val('');
 				}
-				//Собираем значения строки в массив
-				masCol.push($.trim($(this).val()));
+				
+				//Если колонка типа richtext
+				if (_this.instances[id].coloumns[index] == 'richtext'){
+					//Собираем значения строки в массив
+					masCol.push($.trim($(this).html()));
+				}else{
+					//Собираем значения строки в массив
+					masCol.push($.trim($(this).val()));
+				}
 			});
 			
+			//Склеиваем значения колонок через разделитель
 			var col = masCol.join(_this.instances[id].splX);
 			
+			//Если значение было хоть в одной колонке из всех в этой строке
 			if (col.length != ((masCol.length - 1) * _this.instances[id].splX.length)){
 				//Проверяем было ли поле с id
 				if (id_field.index !== false){
@@ -101,6 +112,7 @@ $.ddMM.mm_ddMultipleFields = {
 					//Пересобираем строку
 					col = masCol.join(_this.instances[id].splX);
 				}
+				
 				masRows.push(col);
 			}
 		});
@@ -252,6 +264,9 @@ $.ddMM.mm_ddMultipleFields = {
 			//Если textarea
 			}else if(_this.instances[id].coloumns[key] == 'textarea'){
 				_this.makeTextarea(val[key], _this.instances[id].coloumnsTitle[key], _this.instances[id].colWidth[key], $col);
+			//Если richtext
+			}else if(_this.instances[id].coloumns[key] == 'richtext'){
+				_this.makeRichtext(val[key], _this.instances[id].coloumnsTitle[key], _this.instances[id].colWidth[key], $col);
 			//По дефолту делаем текстовое поле
 			}else{
 				_this.makeText(val[key], _this.instances[id].coloumnsTitle[key], _this.instances[id].colWidth[key], $col);
@@ -357,6 +372,34 @@ $.ddMM.mm_ddMultipleFields = {
 	//Make textarea field
 	makeTextarea: function(value, title, width, $fieldCol){
 		return $('<textarea title="' + title + '" style="width:' + width + 'px;" class="ddField">' + value + '</textarea>').appendTo($fieldCol);
+	},
+	//Make richtext field
+	makeRichtext: function(value, title, width, $fieldCol){
+		var _this = this,
+			$field = $('<div title="' + title + '" style="width:' + width + 'px;" class="ddField">' + value + '</div>').appendTo($fieldCol);
+		
+		$('<div class="ddFieldCol_edit"><a class="false" href="#">' + $.ddMM.lang.edit + '</a></div>').appendTo($fieldCol).find('a').on('click', function(event){
+			_this.richtextWindow = window.open($.ddMM.config.site_url + $.ddMM.urls.mm + 'widgets/ddmultiplefields/richtext/index.php', 'mm_ddMultipleFields_richtext', new Array(
+				'width=600',
+				'height=550',
+				'left=' + (($.ddTools.windowWidth - 600) / 2),
+				'top=' + (($.ddTools.windowHeight - 550) / 2),
+				'menubar=no',
+				'toolbar=no',
+				'location=no',
+				'status=no',
+				'resizable=no',
+				'scrollbars=yes'
+			).join(','));
+				
+			if (_this.richtextWindow != null){
+				_this.richtextWindow.$ddField = $field;
+			}
+			
+			event.preventDefault();
+		});
+		
+		return $field;
 	},
 	//Make image field
 	makeImage: function(id, $fieldCol){
@@ -507,9 +550,9 @@ $(function(){
 			if (c){c.trigger('change');}
 		};
 	}
-
+	
 	//Самбмит главной формы
-	$('#mutate').on('submit', function(){
+	$.ddMM.$mutate.on('submit', function(){
 		$.each($.ddMM.mm_ddMultipleFields.instances, function(key){
 			$.ddMM.mm_ddMultipleFields.updateTv(key);
 		});

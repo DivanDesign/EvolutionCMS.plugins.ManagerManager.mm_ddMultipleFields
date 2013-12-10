@@ -5,12 +5,12 @@
  * 
  * Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
- * @uses ManagerManager plugin 0.5.2.
+ * @uses ManagerManager plugin 0.6.
  *
  * @param $tvs {comma separated string} - Names of TV for which the widget is applying. @required
  * @param $roles {comma separated string} - The roles that the widget is applied to (when this parameter is empty then widget is applied to the all roles). Default: ''.
  * @param $templates {comma separated string} - Templates IDs for which the widget is applying (empty value means the widget is applying to all templates). Default: ''.
- * @param $columns {comma separated string} - Column types: field — field type column; text — text type column; textarea — multiple lines column; date — date column; id — hidden column containing unique id; select — list with options (parameter “columnsData”). Default: 'field'.
+ * @param $columns {comma separated string} - Column types: field — field type column; text — text type column; textarea — multiple lines column; richtext — column with rich text editor; date — date column; id — hidden column containing unique id; select — list with options (parameter “columnsData”). Default: 'field'.
  * @param $columnsTitle {comma separated string} - Columns titles. Default: ''.
  * @param $colWidth {comma separated string} - Columns width (one value can be set). Default: 180;
  * @param $splY {string} - Strings separator. Default: '||'.
@@ -33,7 +33,7 @@
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = ''){
 	if (!useThisRule($roles, $templates)){return;}
 	
-	global $modx, $mm_current_page;
+	global $modx;
 	$e = &$modx->Event;
 	
 	$output = '';
@@ -42,12 +42,18 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
 	
 	if ($e->name == 'OnDocFormPrerender'){
+		global $_lang;
+		
 		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
 		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.0');
 		
+		$output .= includeJsCss('$j.ddMM.lang.edit = "'.$_lang['edit'].'";', 'html', 'mm_ddMultipleFields_plain', '1', true, 'js');
+		
 		$e->output($output);
 	}else if ($e->name == 'OnDocFormRender'){
+		global $mm_current_page;
+		
 		if ($columnsData){
 			$columnsDataTemp = explode('||', $columnsData);
 			$columnsData = array();
