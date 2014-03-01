@@ -461,7 +461,7 @@ $.ddMM.mm_ddMultipleFields = {
 
 /**
  * jQuery.fn.mm_ddMultipleFields Plugin
- * @version 1.0 (2013-10-24)
+ * @version 1.0.1 (2014-03-01)
  * 
  * @description Делает мультиполя.
  * 
@@ -480,7 +480,7 @@ $.ddMM.mm_ddMultipleFields = {
  * @param makeFieldFunction {string} - Имя метода конструктора поля (в случае если тип колонки == 'field'). Default: 'makeNull'.
  * @param browseFuntion {function; false} - Функция получения файлов. Default: false.
  * 
- * @copyright 2013, DivanDesign
+ * @copyright 2014, DivanDesign
  * http://www.DivanDesign.biz
  */
 $.fn.mm_ddMultipleFields = function(params){
@@ -510,7 +510,7 @@ $.fn.mm_ddMultipleFields = function(params){
 				_this.instances[id] = $.extend({}, params);
 				
 				//Скрываем оригинальное поле
-				$this.removeClass('imageField').addClass('originalField').hide();
+				$this.removeClass('imageField').off('.mm_widget_showimagetvs').addClass('originalField').hide();
 
 				//Назначаем обработчик события при изменении (необходимо для того, чтобы после загрузки фотки адрес вставлялся в нужное место)
 				$this.on('change.ddEvents', function(){
