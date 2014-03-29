@@ -2,10 +2,11 @@
 //Kill them all
 $_GET = $_POST = $_REQUEST = array();
 //Relative path for manager folder
-define('MODX_MANAGER_PATH', $_SERVER['DOCUMENT_ROOT'].'/manager/');
+include_once("../../../../../cache/siteManager.php");
+if (!defined('MGR_DIR')) define('MGR_DIR', 'manager');
 //Config
 $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'] = '/';
-require_once(MODX_MANAGER_PATH.'/includes/config.inc.php');
+include_once ('../../../../../../'.MGR_DIR.'/includes/config.inc.php');
 startCMSSession();
 
 if ($_SESSION['mgrValidated']){
