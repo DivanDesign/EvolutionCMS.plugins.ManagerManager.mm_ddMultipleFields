@@ -5,12 +5,12 @@ $_GET = $_POST = $_REQUEST = array();
 define('MODX_MANAGER_PATH', $_SERVER['DOCUMENT_ROOT'].'/manager/');
 //Config
 $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'] = '/';
+require_once(MODX_MANAGER_PATH.'includes/protect.inc.php');
 require_once(MODX_MANAGER_PATH.'includes/config.inc.php');
 startCMSSession();
 
 if ($_SESSION['mgrValidated']){
 	define('IN_MANAGER_MODE', true);
-	require_once(MODX_MANAGER_PATH.'includes/protect.inc.php');
 	//Setup the MODx API
 	define('MODX_API_MODE', true);
 	//Initiate a new document parser
