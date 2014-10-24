@@ -114,7 +114,6 @@ $.ddMM.mm_ddMultipleFields = {
 		});
 		
 		//Записываем значение в оригинальное поле
-//		$('#' + id).attr('value', _this.maskQuoutes(masRows.join(_this.instances[id].splY)));
 		$('#' + id).val(masRows.join(_this.instances[id].splY));
 	},
 	//Инициализация
@@ -176,23 +175,15 @@ $.ddMM.mm_ddMultipleFields = {
 			handle: '.ddSortHandle',
 			cursor: 'n-resize',
 			axis: 'y',
-/*			tolerance: 'pointer',*/
-/*			containment: 'parent',*/
 			placeholder: 'ui-state-highlight',
 			start: function(event, ui){
 				ui.placeholder.html('<td colspan="' + (_this.instances[id].coloumns.length + 2) + '"><div></div></td>').find('div').css('height', ui.item.height());
 			},
 			stop: function(event, ui){
 				//Находим родителя таблицы, вызываем функцию обновления поля
-//				ui.item.parents('.ddMultipleField:first').trigger('change.ddEvents');
 				_this.moveAddButton(id);
 			}
 		});
-		
-		//Запускаем обновление, если были ограничения
-//		if (_this.instances[id].maxRow || _this.instances[id].minRow){
-//			$ddMultipleField.trigger('change.ddEvents');
-//		}
 	},
 	//Функция создания строки
 	//Принимает id и данные строки
@@ -259,7 +250,6 @@ $.ddMM.mm_ddMultipleFields = {
 				$col.hide();
 			//Если селект
 			}else if(_this.instances[id].coloumns[key] == 'select'){
-//				$field.remove();
 				_this.makeSelect(val[key], _this.instances[id].coloumnsTitle[key], _this.instances[id].coloumnsData[key], _this.instances[id].colWidth[key], $col);
 			//Если дата
 			}else if(_this.instances[id].coloumns[key] == 'date'){
@@ -278,11 +268,6 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		//Create DeleteButton
 		_this.makeDeleteButton(id, _this.makeFieldCol($fieldBlock));
-		
-		//При изменении и загрузке
-//		$('.ddField', $fieldBlock).on('load.ddEvents change.ddEvents',function(){
-//			$(this).parents('.ddMultipleField:first').trigger('change.ddEvents');
-//		});
 		
 		//Специально для полей, содержащих изображения необходимо инициализировать
 		$('.ddFieldCol:has(.ddField_image) .ddField', $fieldBlock).trigger('change.ddEvents');
@@ -324,14 +309,9 @@ $.ddMM.mm_ddMultipleFields = {
 					//При любом удалении показываем кнопку добавления
 					_this.instances[id].$addButton.removeAttr('disabled');
 					
-					//Инициализируем событие изменения
-//					$table.trigger('change.ddEvents');
-					
 					return;
 				});
 			}
-			//Инициализируем событие изменения
-//			$table.trigger('change.ddEvents');
 		});
 	},
 	//Функция создания кнопки +, вызывается при инициализации
