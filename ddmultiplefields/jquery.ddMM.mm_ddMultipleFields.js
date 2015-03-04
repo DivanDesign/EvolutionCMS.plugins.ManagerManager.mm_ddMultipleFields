@@ -158,7 +158,7 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		//Делаем новые мульти-поля
 		var arr = val.split(_this.instances[id].splY);
-		
+
 		//Проверяем на максимальное и минимальное количество строк
 		if (_this.instances[id].maxRow && arr.length > _this.instances[id].maxRow){
 			arr.length = _this.instances[id].maxRow;
@@ -192,6 +192,47 @@ $.ddMM.mm_ddMultipleFields = {
 				_this.moveAddButton(id);
 			}
 		});
+	 	// Возможность пакетного заполнения
+		var batchFields = ["image","file"];
+		for (var k=0;k < _this.instances[id].coloumns.length; k++) 
+			if ($.inArray(_this.instances[id].coloumns[k],batchFields)!=-1) {
+				_this.instances[id].batch={"type":this.instances[id].coloumns[k],"col":k};
+				//Пока только для первого найденного
+				break;
+			}
+		if (_this.instances[id].batch) {
+		 var BrowseServerMultiple = function (ctrl,type) {
+		  type = (type!=('image'||'file')?"image":type)+"s";
+		  lastImageCtrl = ctrl;
+		  var w = screen.width * 0.5;
+		  var h = screen.height * 0.5;
+		  OpenServerBrowser('media/browser/mcpuk/browse.php?opener=ddMultipleField&type='+type, w, h);
+		 };
+			$("<input type='button' title='' value='Пакетное заполнение' />").appendTo($ddMultipleFieldControl).click(function(e){
+				e.preventDefault();
+				window.KCFinder = {
+					callBackMultiple: function (files) {
+						window.KCFinder = null;
+						for (var i = 0; i < files.length; i++) {
+							var arr = [];
+							arr.length = _this.instances[id].coloumns.length;
+							arr[_this.instances[id].batch.col] = files[i];
+							_this.makeFieldRow(id, arr.join(_this.instances[id].splX));
+						}
+						_this.moveAddButton(id);
+						var checkEmpty = "";
+						$(".ddFieldBlock:first input.ddField", $ddMultipleField).each(function () {
+							checkEmpty += $(this).val()
+						});
+						if (!checkEmpty) $(".ddFieldBlock:first .ddDeleteButton", $ddMultipleField).click();
+					},
+					callBack: function (url) {
+						window.KCFinder.callBackMultiple([url])
+					}
+				};
+				BrowseServerMultiple(id,_this.instances[id].batch.type);
+			});
+		}
 	},
 	//Функция создания строки
 	//Принимает id и данные строки
@@ -215,7 +256,7 @@ $.ddMM.mm_ddMultipleFields = {
 		var $fieldBlock = $('<tr class="ddFieldBlock ' + id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo($('#' + id + 'ddMultipleField'));
 		
 		//Разбиваем переданное значение на колонки
-		val = val ? _this.maskQuoutes(val).split(_this.instances[id].splX):[];
+		val = val ? val.split(_this.instances[id].splX):[];
 		
 		var $field;
 		
