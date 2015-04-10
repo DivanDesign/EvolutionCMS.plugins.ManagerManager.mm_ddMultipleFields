@@ -153,28 +153,26 @@ $.ddMM.mm_ddMultipleFields = {
 
 		//Если есть хоть один заголовок
 		if (_inst.coloumnsTitle.length > 0){
-			var text = '';
+			var _thead = [$("<th/>")];
 			
 			//Создадим шапку (перебираем именно колонки!)
 			$.each(_inst.coloumns, function(key, val){
 				//Если это колонка с id
-				var _cTitle = _inst.coloumnsTitle[key];
 				if (val == 'id'){
 					//Вставим пустое значение в массив с заголовками
 					_inst.coloumnsTitle.splice(key, 0, '');
-					
-					text += '<th style="display: none;"></th>';
+					_thead.push('<th style="display: none;"></th>');
 				}else{
+					var _cTitle;
 					//Если такого значения нет — сделаем
-					if (!_cTitle){
-						_cTitle = '';
-					}
-					
-					text += '<th>' + (_cTitle) + '</th>';
+					if (!(_cTitle=_inst.coloumnsTitle[key])){
+						_cTitle = _inst.coloumnsTitle[key] = '';
+					} 
+					_thead.push('<th>' + (_cTitle) + '</th>');
 				}
 			});
-			
-			$('<tr><th></th>' + text + '<th></th></tr>').appendTo($ddMultipleField);
+			_thead.push('<th/>');
+			$("<tr/>").append(_thead).appendTo($ddMultipleField);
 		}
 		
 		//Делаем новые мульти-поля
