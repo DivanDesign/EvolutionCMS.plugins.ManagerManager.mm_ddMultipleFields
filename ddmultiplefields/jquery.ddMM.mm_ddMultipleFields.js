@@ -168,6 +168,12 @@ $.ddMM.mm_ddMultipleFields = {
 					if (!(_cTitle=_inst.coloumnsTitle[key])){
 						_cTitle = _inst.coloumnsTitle[key] = '';
 					} 
+					// Подсказка для заголовка - расширенный текст после разделителя
+					var _titles = _cTitle.split(_inst.splX);
+					if (_titles.length>1) {
+						_cTitle = _inst.coloumnsTitle[key] = _titles[0];
+						_thead.push('<th title="'+_titles[1]+'" class="tip">' + (_cTitle) + '</th>');
+					} else
 					_thead.push('<th>' + (_cTitle) + '</th>');
 				}
 			});
