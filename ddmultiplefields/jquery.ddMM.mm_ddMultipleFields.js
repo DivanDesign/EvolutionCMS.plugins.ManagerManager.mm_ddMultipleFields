@@ -292,6 +292,7 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		//Перебираем колонки
 		$.each(_inst.coloumns, function(key){
+			_inst.coloumnsData[key] && (_inst.coloumnsDataDefault = _inst.coloumnsData[key]) || (_inst.coloumnsDataDefault && ( _inst.coloumnsData[key]=_inst.coloumnsDataDefault ));
 			var _cTitle = _inst.coloumnsTitle[key];
 			if (typeof val[key]=='undefined'){
 				//Значение по умолчанию. для  JSON, искать флаг в 3-м элементе, или первое значение
