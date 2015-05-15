@@ -559,7 +559,7 @@ $.ddMM.mm_ddMultipleFields = {
 	},
 	//Функция создания списка
 	makeSelect: function(value, title, data, width, $fieldCol){
-		var $select = $('<select class="ddField">');
+		var $select = $('<select class="ddField" style="' + this._united(width,"width: %s") + '">');
 		
 		if (data){
 			var dataMas = $.parseJSON(data),
