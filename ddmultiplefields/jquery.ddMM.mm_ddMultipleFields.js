@@ -57,46 +57,50 @@ $.ddMM.mm_ddMultipleFields = {
 			_inst.currentField = false;
 		}
 	},
+	_getRowFields: function(id,ddFieldBlock,id_field) {
+		var _inst = this.instances[id],
+			masCol = [];
+
+		//Перебираем все колонки, закидываем значения в массив
+		$(ddFieldBlock).find('.ddField').each(function(index){
+			//Если поле с типом id
+			if (typeof id_field !=="undefined" && _inst.coloumns[index] == 'id'){
+				id_field.index = index;
+				id_field.$field = $(this);
+
+				//Сохраняем значение поля
+				id_field.val = id_field.$field.val();
+				//Если значение пустое, то генерим
+				if (id_field.val == ''){id_field.val = (new Date).getTime();}
+
+				//Обнуляем значение
+				id_field.$field.val('');
+			}
+			//Если колонка типа richtext
+			if (_inst.coloumns[index] == 'richtext'){
+				//Собираем значения строки в массив
+				masCol.push($.trim($(this).html()));
+			}else{
+				//Собираем значения строки в массив
+				masCol.push($.trim($(this).val()));
+			}
+		});
+		return masCol;
+	},
 	//Обновляет оригинальное поле TV, собирая данные по мульти-полям
 	updateTv: function(id){
-		var _inst = this.instances[id],
-			masRows = new Array();
+		var _this = this,  
+			_inst = _this.instances[id],
+			masRows = [];
 		
 		//Перебираем все строки
 		$('#' + id + 'ddMultipleField .ddFieldBlock').each(function(){
-			var $this = $(this),
-				masCol = new Array(),
-				id_field = {
+			var id_field = {
 					index: false,
 					val: false,
 					$field: false
 				};
-			
-			//Перебираем все колонки, закидываем значения в массив
-			$this.find('.ddField').each(function(index){
-				//Если поле с типом id TODO: Какой смысл по всех этих манипуляциях?
-				if (_inst.coloumns[index] == 'id'){
-					id_field.index = index;
-					id_field.$field = $(this);
-					
-					//Сохраняем значение поля
-					id_field.val = id_field.$field.val();
-					//Если значение пустое, то генерим
-					if (id_field.val == ''){id_field.val = (new Date).getTime();}
-					
-					//Обнуляем значение
-					id_field.$field.val('');
-				}
-				
-				//Если колонка типа richtext
-				if (_inst.coloumns[index] == 'richtext'){
-					//Собираем значения строки в массив
-					masCol.push($.trim($(this).html()));
-				}else{
-					//Собираем значения строки в массив
-					masCol.push($.trim($(this).val()));
-				}
-			});
+			var masCol = _this._getRowFields(id,this,id_field);
 			
 			//Склеиваем значения колонок через разделитель
 			var col = masCol.join(_inst.splX);
@@ -262,7 +266,7 @@ $.ddMM.mm_ddMultipleFields = {
 	},
 	//Функция создания строки
 	//Принимает id и данные строки
-	makeFieldRow: function(id, val){
+	makeFieldRow: function(id, val,returnOnly){
 		var _this = this;
 		var _inst = _this.instances[id];
 		var _ddField = $('#' + id + 'ddMultipleField');
@@ -281,7 +285,7 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		}
 		
-		var $fieldBlock = $('<tr class="ddFieldBlock ' + id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo(_ddField);
+		var $fieldBlock = $('<tr class="ddFieldBlock ' + id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>');
 		if (_inst.options && _inst.options.sortable===false) _ddField.addClass("nosort");
 
 		//Разбиваем переданное значение на колонки
@@ -381,6 +385,7 @@ $.ddMM.mm_ddMultipleFields = {
 		//Специально для полей, содержащих изображения необходимо инициализировать
 		$('.ddFieldCol:has(.ddField_image) .ddField', $fieldBlock).trigger('change.ddEvents');
 		
+		if (!returnOnly) $fieldBlock.appendTo($("tbody",_ddField));
 		_this.numberingRows(id);
 		return $fieldBlock;
 	},
@@ -460,9 +465,10 @@ $.ddMM.mm_ddMultipleFields = {
 			"title": "Copy row",
 			"disabled": (_inst.maxRow && fieldBlocksLen == _inst.maxRow) ? "disabled" : false
 		}).on('click', function () {
-			var _parent = $(this).closest("tr");
 			if ($(this).attr("disabled")) return false;
-			_parent.clone(true, true).find(".ddAddButton").remove().end().insertAfter(_parent);
+			var ddFieldBlock = $(this).closest("tr");
+			var rowData = _this._getRowFields(id,ddFieldBlock);
+			ddFieldBlock.after(_this.makeFieldRow(id,rowData,false));
 			_this.moveAddButton(id);
 			if (_inst.maxRow && fieldBlocksLen + 1 == _inst.maxRow) {
 				$(".ddCloneButton,.ddAddButton", '#' + id + 'ddMultipleField').attr("disabled", true)
