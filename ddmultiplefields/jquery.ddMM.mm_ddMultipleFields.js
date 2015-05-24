@@ -243,7 +243,7 @@ $.ddMM.mm_ddMultipleFields = {
 							var arr = [];
 							arr.length = _inst.coloumns.length;
 							arr[_inst.batch.col] = files[i];
-							_this.makeFieldRow(id, arr.join(_inst.splX));
+							_this.makeFieldRow(id, arr);
 						}
 						_this.moveAddButton(id);
 						var checkEmpty = "";
@@ -285,7 +285,8 @@ $.ddMM.mm_ddMultipleFields = {
 		if (_inst.options && _inst.options.sortable===false) _ddField.addClass("nosort");
 
 		//Разбиваем переданное значение на колонки
-		val = val ? val.split(_inst.splX):[];
+		val = val ? val :[];
+		if (typeof val=="string") val=val.split(_inst.splX);
 		
 		var $field;
 		
