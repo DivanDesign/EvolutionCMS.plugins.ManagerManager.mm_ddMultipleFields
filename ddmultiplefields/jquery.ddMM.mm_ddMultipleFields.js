@@ -138,7 +138,7 @@ $.ddMM.mm_ddMultipleFields = {
 			//Блок для общих управляющих элементов
 			$ddMultipleFieldControl = $('<div class="ddMultipleField Control" id="' + id + 'ddMultipleFieldControl"></div>').appendTo(target),
 			//Делаем таблицу мульти-полей, вешаем на таблицу функцию обновления оригинального поля
-			$ddMultipleField = $('<table class="ddMultipleField" id="' + id + 'ddMultipleField"></table>').appendTo(target)/*.on('change.ddEvents', function(){_this.updateTv(id);})*/;
+			$ddMultipleField = $('<table class="ddMultipleField" id="' + id + 'ddMultipleField"><tbody></tbody></table>').appendTo(target)/*.on('change.ddEvents', function(){_this.updateTv(id);})*/;
 
 		//Кнопка очистки
 		$('<input type="button" value="×" title="' + $.ddMM.lang.confirm_delete_record + '"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
@@ -178,7 +178,7 @@ $.ddMM.mm_ddMultipleFields = {
 				}
 			});
 			_thead.push('<th/>');
-			$("<tr/>").append(_thead).appendTo($ddMultipleField);
+			$("<thead/>").append($("<tr/>").append(_thead)).prependTo($ddMultipleField);
 		}
 		
 		//Делаем новые мульти-поля
@@ -282,7 +282,6 @@ $.ddMM.mm_ddMultipleFields = {
 		}
 		
 		var $fieldBlock = $('<tr class="ddFieldBlock ' + id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo(_ddField);
-		if (!_inst.options || _inst.options.showIndex!==false) $fieldBlock.find("td:first *:not(:has(*))").html($fieldBlock.index());
 		if (_inst.options && _inst.options.sortable===false) _ddField.addClass("nosort");
 
 		//Разбиваем переданное значение на колонки
@@ -376,12 +375,23 @@ $.ddMM.mm_ddMultipleFields = {
 		_this.makeDeleteButton(id, _this.makeFieldCol($fieldBlock));
 
 		//Создаём кнопку copy
-		_this.makeCopyButton(id).appendTo($('.ddFieldCol:last',_ddField));
+		_this.makeCopyButton(id).appendTo($('.ddFieldCol:last',$fieldBlock));
 
 		//Специально для полей, содержащих изображения необходимо инициализировать
 		$('.ddFieldCol:has(.ddField_image) .ddField', $fieldBlock).trigger('change.ddEvents');
 		
+		_this.numberingRows(id);
 		return $fieldBlock;
+	},
+	//Нумерация строк
+	numberingRows: function(id){
+		var _inst = this.instances[id];
+		if (_inst.options && _inst.options.showIndex===false) return;
+		var _ddField = $('#' + id + 'ddMultipleField');
+		$("tbody tr",_ddField).each(function(){
+			var t=$(this);
+			t.find("td:first *:not(:has(*))").html(t.index()+1);
+		})
 	},
 	//Создание колонки поля
 	makeFieldCol: function($fieldRow){
