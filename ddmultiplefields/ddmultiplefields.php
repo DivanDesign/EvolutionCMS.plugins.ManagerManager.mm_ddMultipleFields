@@ -32,7 +32,9 @@
 
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = '',$options = array()){
 	if (!useThisRule($roles, $templates)){return;}
-	
+	if (is_array($options)) {
+		$options = json_encode($options);
+	}
 	global $modx;
 	$e = &$modx->Event;
 	
@@ -103,7 +105,7 @@ $j("#tv'.$tv['id'].'").mm_ddMultipleFields({
 	imageStyle: "'.$stylePrewiew.'",
 	minRow: "'.$minRow.'",
 	maxRow: "'.$maxRow.'",
-	options: '.json_encode($options).'
+	options: '.$options.'
 });
 ';
 		}
