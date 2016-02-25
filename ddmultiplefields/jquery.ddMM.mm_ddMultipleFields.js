@@ -34,7 +34,8 @@ $.ddMM.mm_ddMultipleFields = {
 		//Различные опции
 		options: {
 			sortable:true,
-			showIndex:true
+			showIndex:true,
+			btnToggleRaw:false
 		}
 	},
 //	Все экземпляры (TV). Структура: {
@@ -156,7 +157,13 @@ $.ddMM.mm_ddMultipleFields = {
 			e.preventDefault();
 			_this._reset(id);
 		});
-
+		// Кнопка "Показать/скрыть исходное значение". Простая возможность скопировать и вставить значение всего поля.
+		if (_inst.options.btnToggleRaw) {
+			$('<input type="button" value="Raw" title="Показать/Скрыть оригинальное поле. Доступны стандартные копирование и вставка. После вставки, нажмите кнопку сброса. Внимание! Неправильный формат исходного поля может привести к непредсказуемым последствиям!"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
+				e.preventDefault();
+				$('#' + id).toggle();
+			});
+		}
 		//Если есть хоть один заголовок
 		if (_inst.coloumnsTitle.length > 0){
 			var _thead = [$("<th/>")];
