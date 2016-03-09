@@ -368,6 +368,10 @@ $.ddMM.mm_ddMultipleFields = {
 				case 'select':
 				_this.makeSelect(val[key], _cTitle, _inst.coloumnsData[key], _inst.colWidth[key], $col);
 				break;
+			//Если мультиселект
+				case 'multiselect':
+				_this.makeSelect(val[key], _cTitle, _inst.coloumnsData[key], _inst.colWidth[key], $col,true);
+				break;
 			//Если дата
 				case 'date':
 				_this.makeDate(val[key], _cTitle, $col);
@@ -596,8 +600,8 @@ $.ddMM.mm_ddMultipleFields = {
 		});
 	},
 	//Функция создания списка
-	makeSelect: function(value, title, data, width, $fieldCol){
-		var $select = $('<select class="ddField" style="' + this._united(width,"width: %s") + '">');
+	makeSelect: function(value, title, data, width, $fieldCol, $multiple){
+		var $select = $('<select class="ddField" style="' + this._united(width,"width: %s") + '"' + ($multiple?' multiple size="" ':'') + '>');
 		
 		if (data){
 			var dataMas = $.parseJSON(data),
@@ -610,7 +614,7 @@ $.ddMM.mm_ddMultipleFields = {
 			$select.append(options);
 		}
 		
-		if (value){$select.val(value);}
+		if (value) {$select.val($multiple?value.split(","):value);}
 		
 		return $select.appendTo($fieldCol);
 	},
