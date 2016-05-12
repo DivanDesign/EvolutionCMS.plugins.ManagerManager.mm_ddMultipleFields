@@ -550,10 +550,10 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		$('<div class="ddFieldCol_edit"><a class="false" href="#">' + $.ddMM.lang.edit + '</a></div>').appendTo($fieldCol).find('a').on('click', function(event){
 			_this.richtextWindow = window.open($.ddMM.config.site_url + $.ddMM.urls.mm + 'widgets/ddmultiplefields/richtext/index.php', 'mm_ddMultipleFields_richtext', new Array(
-				'width=600',
-				'height=550',
-				'left=' + (($.ddTools.windowWidth - 600) / 2),
-				'top=' + (($.ddTools.windowHeight - 550) / 2),
+				'width=900',
+				'height=560',
+				'left=' + (($.ddTools.windowWidth - 900) / 2),
+				'top=' + (($.ddTools.windowHeight - 560) / 2),
 				'menubar=no',
 				'toolbar=no',
 				'location=no',
