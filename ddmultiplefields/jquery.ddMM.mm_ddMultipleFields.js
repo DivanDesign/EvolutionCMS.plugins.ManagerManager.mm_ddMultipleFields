@@ -33,9 +33,10 @@ $.ddMM.mm_ddMultipleFields = {
 		maxRow: 0,
 		//Различные опции
 		options: {
-			sortable:true,
-			showIndex:true,
-			btnToggleRaw:false
+			sortable: true,
+			showIndex: true,
+			btnToggleRaw: false,
+			hideCommonControl: false
 		}
 	},
 //	Все экземпляры (TV). Структура: {
@@ -144,7 +145,7 @@ $.ddMM.mm_ddMultipleFields = {
 			$ddMultipleFieldControl = $('<div class="ddMultipleField Control" id="' + id + 'ddMultipleFieldControl"></div>').appendTo(target),
 			//Делаем таблицу мульти-полей, вешаем на таблицу функцию обновления оригинального поля
 			$ddMultipleField = $('<table class="ddMultipleField" id="' + id + 'ddMultipleField"><tbody></tbody></table>').appendTo(target)/*.on('change.ddEvents', function(){_this.updateTv(id);})*/;
-
+		if (_inst.options.hideCommonControl) $ddMultipleFieldControl.hide();
 		if (!(_inst.maxRow == 1 && _inst.minRow == 1)) {
 		//Кнопка очистки
 			$('<input type="button" value="×" title="' + $.ddMM.lang.confirm_delete_record + '" class="ddDeleteButton" />').appendTo($ddMultipleFieldControl).on("click", function (e) {
