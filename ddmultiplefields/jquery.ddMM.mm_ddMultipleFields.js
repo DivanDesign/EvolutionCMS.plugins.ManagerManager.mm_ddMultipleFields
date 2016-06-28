@@ -148,9 +148,9 @@ $.ddMM.mm_ddMultipleFields = {
 		if (_inst.options.hideCommonControl) $ddMultipleFieldControl.hide();
 		if (!(_inst.maxRow == 1 && _inst.minRow == 1)) {
 		//Кнопка очистки
-			$('<input type="button" value="×" title="' + $.ddMM.lang.confirm_delete_record + '" class="ddDeleteButton" />').appendTo($ddMultipleFieldControl).on("click", function (e) {
+			$('<input type="button" value="×" title="Очистить" class="ddDeleteButton" />').appendTo($ddMultipleFieldControl).on("click", function (e) {
 				e.preventDefault();
-				$(".ddDeleteButton"+(_inst.minRow?":gt("+(_inst.minRow-1)+")":""), $ddMultipleField).click();
+				if(confirm($.ddMM.lang.confirm_delete_record))$(".ddDeleteButton"+(_inst.minRow?":gt("+(_inst.minRow-1)+")":""), $ddMultipleField).click();
 			});
 		}
 		//Кнопка Reset
