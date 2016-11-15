@@ -1,13 +1,12 @@
 /**
- * jQuery ddMM.mm_ddMultipleFields Plugin
+ * jQuery.ddMM.mm_ddMultipleFields
  * @version 1.2 (2014-10-23)
  * 
  * @uses jQuery 1.9.1
- * @uses $.ddTools 1.8.1
- * @uses $.ddMM 1.1.2
+ * @uses jQuery.ddTools 1.8.1
+ * @uses jQuery.ddMM 1.1.2
  * 
- * @copyright 2014, DivanDesign
- * http://www.DivanDesign.biz
+ * @copyright 2013–2014 [DivanDesign]{@link http://www.DivanDesign.biz }
  */
 
 (function($){
@@ -41,7 +40,17 @@ $.ddMM.mm_ddMultipleFields = {
 //	}
 	instances: {},
 	richtextWindow: null,
-	//Обновляет мульти-поле, берёт значение из оригинального поля
+	
+	/**
+	 * @method updateField
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Обновляет мульти-поле, берёт значение из оригинального поля.
+	 * 
+	 * @param id {string} — TV id.
+	 * 
+	 * @returns {void}
+	 */
 	updateField: function(id){
 		var _this = this;
 		
@@ -53,7 +62,17 @@ $.ddMM.mm_ddMultipleFields = {
 			_this.instances[id].currentField = false;
 		}
 	},
-	//Обновляет оригинальное поле TV, собирая данные по мульти-полям
+	
+	/**
+	 * @method updateTv
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
+	 * 
+	 * @param id {string} — TV id.
+	 * 
+	 * @returns {void}
+	 */
 	updateTv: function(id){
 		var _this = this,
 			masRows = new Array();
@@ -116,12 +135,23 @@ $.ddMM.mm_ddMultipleFields = {
 		//Записываем значение в оригинальное поле
 		$('#' + id).val(masRows.join(_this.instances[id].splY));
 	},
-	//Инициализация
-	//Принимает id оригинального поля, его значения и родителя поля
+	
+	/**
+	 * @method init
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Инициализация.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param val {string} — TV value.
+	 * @param target {jQuery} — TV parent.
+	 * 
+	 * @returns {void}
+	 */
 	init: function(id, val, target){
 		var _this = this,
 			//Делаем таблицу мульти-полей, вешаем на таблицу функцию обновления оригинального поля
-			$ddMultipleField = $('<table class="ddMultipleField" id="' + id + 'ddMultipleField"></table>').appendTo(target)/*.on('change.ddEvents', function(){_this.updateTv(id);})*/;
+			$ddMultipleField = $('<table class="ddMultipleField" id="' + id + 'ddMultipleField"></table>').appendTo(target);
 		
 		//Если есть хоть один заголовок
 		if (_this.instances[id].coloumnsTitle.length > 0){
@@ -152,16 +182,26 @@ $.ddMM.mm_ddMultipleFields = {
 		var arr = val.split(_this.instances[id].splY);
 		
 		//Проверяем на максимальное и минимальное количество строк
-		if (_this.instances[id].maxRow && arr.length > _this.instances[id].maxRow){
+		if (
+			_this.instances[id].maxRow &&
+			arr.length > _this.instances[id].maxRow
+		){
 			arr.length = _this.instances[id].maxRow;
-		}else if (_this.instances[id].minRow && arr.length < _this.instances[id].minRow){
+		}else if (
+			_this.instances[id].minRow &&
+			arr.length < _this.instances[id].minRow
+		){
 			arr.length = _this.instances[id].minRow;
 		}
 		
 		//Создаём кнопку +
 		_this.instances[id].$addButton = _this.makeAddButton(id);
 		
-		for (var i = 0, len = arr.length; i < len; i++){
+		for (
+			var i = 0, len = arr.length;
+			i < len;
+			i++
+		){
 			//В случае, если размер массива был увеличен по minRow, значением будет undefined, посему зафигачим пустую строку
 			_this.makeFieldRow(id, arr[i] || '');
 		}
@@ -185,8 +225,18 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		});
 	},
-	//Функция создания строки
-	//Принимает id и данные строки
+	
+	/**
+	 * @method makeFieldRow
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Функция создания строки.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param val {string} — Row value.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeFieldRow: function(id, val){
 		var _this = this;
 		
@@ -196,10 +246,16 @@ $.ddMM.mm_ddMultipleFields = {
 			var fieldBlocksLen = $('#' + id + 'ddMultipleField .ddFieldBlock').length;
 			
 			//Проверяем превышает ли уже количество строк максимальное
-			if (_this.instances[id].maxRow && fieldBlocksLen >= _this.instances[id].maxRow){
+			if (
+				_this.instances[id].maxRow &&
+				fieldBlocksLen >= _this.instances[id].maxRow
+			){
 				return;
 			//Если будет равно максимуму при создании этого поля
-			}else if (_this.instances[id].maxRow && fieldBlocksLen + 1 == _this.instances[id].maxRow){
+			}else if (
+				_this.instances[id].maxRow &&
+				fieldBlocksLen + 1 == _this.instances[id].maxRow
+			){
 				_this.instances[id].$addButton.attr('disabled', true);
 			}
 		}
@@ -274,17 +330,41 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		return $fieldBlock;
 	},
-	//Создание колонки поля
+	
+	/**
+	 * @method makeFieldCol
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Создание колонки поля.
+	 * 
+	 * @param $fieldRow {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeFieldCol: function($fieldRow){
 		return $('<td class="ddFieldCol"></td>').appendTo($fieldRow);
 	},
-	//Make delete button
+	
+	/**
+	 * @method makeDeleteButton
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Makes delete button.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {void}
+	 */
 	makeDeleteButton: function(id, $fieldCol){
 		var _this = this;
 		
 		$('<input class="ddDeleteButton" type="button" value="×" />').appendTo($fieldCol).on('click', function(){
 			//Проверяем на минимальное количество строк
-			if (_this.instances[id].minRow && $('#' + id + 'ddMultipleField .ddFieldBlock').length <= _this.instances[id].minRow){
+			if (
+				_this.instances[id].minRow &&
+				$('#' + id + 'ddMultipleField .ddFieldBlock').length <= _this.instances[id].minRow
+			){
 				return;
 			}
 			
@@ -314,7 +394,17 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		});
 	},
-	//Функция создания кнопки +, вызывается при инициализации
+	
+	/**
+	 * @method makeAddButton
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Функция создания кнопки +, вызывается при инициализации.
+	 * 
+	 * @param id {string} — TV id.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeAddButton: function(id){
 		var _this = this;
 		
@@ -323,7 +413,18 @@ $.ddMM.mm_ddMultipleFields = {
 			$(this).appendTo(_this.makeFieldRow(id, '').find('.ddFieldCol:last'));
 		});
 	},
-	//Перемещение кнопки +
+	
+	/**
+	 * @method moveAddButton
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Перемещение кнопки.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param $target {string} — Target container.
+	 * 
+	 * @returns {void}
+	 */
 	moveAddButton: function(id, $target){
 		var _this = this;
 		
@@ -335,17 +436,42 @@ $.ddMM.mm_ddMultipleFields = {
 		//Находим кнопку добавления и переносим куда надо
 		_this.instances[id].$addButton.appendTo($target.find('.ddFieldCol:last'));
 	},
-	//Make text field
+	
+	/**
+	 * @method makeText
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Make text field.
+	 * 
+	 * @param value {string} — Field value.
+	 * @param title {string} — Field title.
+	 * @param width {integer} — Field width.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeText: function(value, title, width, $fieldCol){
 		var $field = $('<input type="text" title="' + title + '" style="width:' + width + 'px;" class="ddField" />');
 		
 		return $field.val(value).appendTo($fieldCol);
 	},
-	//Make date field
+	
+	/**
+	 * @method makeDate
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Make date field.
+	 * 
+	 * @param value {string} — Field value.
+	 * @param title {string} — Field title.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeDate: function(value, title, $fieldCol){
 		//name нужен для DatePicker`а
 		var $field = $('<input type="text" title="' + title + '" class="ddField DatePicker" name="ddMultipleDate" />').val(value).appendTo($fieldCol);
-
+		
 		new DatePicker($field.get(0), {
 			'yearOffset': $.ddMM.config.datepicker_offset,
 			'format': $.ddMM.config.datetime_format + ' hh:mm:00'
@@ -353,11 +479,37 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		return $field;
 	},
-	//Make textarea field
+	
+	/**
+	 * @method makeTextarea
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Make textarea field.
+	 * 
+	 * @param value {string} — Field value.
+	 * @param title {string} — Field title.
+	 * @param width {integer} — Field width.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeTextarea: function(value, title, width, $fieldCol){
 		return $('<textarea title="' + title + '" style="width:' + width + 'px;" class="ddField">' + value + '</textarea>').appendTo($fieldCol);
 	},
-	//Make richtext field
+	
+	/**
+	 * @method makeRichtext
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Make richtext field.
+	 * 
+	 * @param value {string} — Field value.
+	 * @param title {string} — Field title.
+	 * @param width {integer} — Field width.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeRichtext: function(value, title, width, $fieldCol){
 		var _this = this,
 			$field = $('<div title="' + title + '" style="width:' + width + 'px;" class="ddField">' + value + '</div>').appendTo($fieldCol);
@@ -385,7 +537,18 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		return $field;
 	},
-	//Make image field
+	
+	/**
+	 * @method makeImage
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Make image field.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {void}
+	 */
 	makeImage: function(id, $fieldCol){
 		var _this = this;
 		
@@ -413,7 +576,24 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		});
 	},
-	//Функция создания списка
+	
+	/**
+	 * @method makeSelect
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Функция создания списка.
+	 * 
+	 * @param value {string} — Field value.
+	 * @param title {string} — Field title.
+	 * @param [data] {string_JSON} — Field data.
+	 * @param data[i] {array} — Item.
+	 * @param data[i][0] {string} — Item value.
+	 * @param [data[i][1]=data[i][0]] {string} — Item title.
+	 * @param width {integer} — Field width.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {jQuery}
+	 */
 	makeSelect: function(value, title, data, width, $fieldCol){
 		var $select = $('<select class="ddField">');
 		
@@ -432,29 +612,39 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		return $select.appendTo($fieldCol);
 	},
-	//Функция ничего не делает
+	
+	/**
+	 * @method makeNull
+	 * @version 1.0 (2014-10-23)
+	 * 
+	 * @desc Функция ничего не делает.
+	 * 
+	 * @param id {string} — TV id.
+	 * @param $fieldCol {jQuery} — Target container.
+	 * 
+	 * @returns {false}
+	 */
 	makeNull: function(id, $fieldCol){return false;}
 };
 
 /**
- * jQuery.fn.mm_ddMultipleFields Plugin
+ * jQuery.fn.mm_ddMultipleFields
  * @version 1.0.2 (2014-10-23)
  * 
- * @description Делает мультиполя.
+ * @desc Делает мультиполя.
  * 
- * Параметры передаются в виде plain object.
- * @param splY {string} - Разделитель строк. Default: '||'.
- * @param splX {string} - Разделитель колонок. Default: '::'.
- * @param coloumns {comma separated string; array} - Колонки. Default: 'field'.
- * @param coloumnsTitle {comma separated string; array} - Заголовки колонок. Default: ''.
- * @param coloumnsData {separated string; array} - Данные колонок. Default: ''.
- * @param colWidth {comma separated string} - Ширины колонок. Default: '180'.
- * @param imageStyle {string} - Стиль превьюшек. Default: ''.
- * @param minRow {integer} - Минимальное количество строк. Default: 0.
- * @param maxRow {integer} - Максимальное количество строк. Default: 0.
+ * @param params {object_plain} — The parameters.
+ * @param params.splY {string} — Разделитель строк. Default: '||'.
+ * @param params.splX {string} — Разделитель колонок. Default: '::'.
+ * @param params.coloumns {string_commaSeparated|array} — Колонки. Default: 'field'.
+ * @param params.coloumnsTitle {string_commaSeparated|array} — Заголовки колонок. Default: ''.
+ * @param params.coloumnsData {separated string|array} — Данные колонок. Default: ''.
+ * @param params.colWidth {string_commaSeparated} — Ширины колонок. Default: '180'.
+ * @param params.imageStyle {string} — Стиль превьюшек. Default: ''.
+ * @param params.minRow {integer} — Минимальное количество строк. Default: 0.
+ * @param params.maxRow {integer} — Максимальное количество строк. Default: 0.
  * 
- * @copyright 2014, DivanDesign
- * http://www.DivanDesign.biz
+ * @copyright 2013–2014 [DivanDesign]{@link http://www.DivanDesign.biz }
  */
 $.fn.mm_ddMultipleFields = function(params){
 	var _this = $.ddMM.mm_ddMultipleFields;
@@ -508,8 +698,8 @@ $(function(){
 		lastFileCtrl = '';
 		
 		OpenServerBrowser = function(url, width, height){
-			var iLeft = (screen.width  - width) / 2;
-			var iTop  = (screen.height - height) / 2;
+			var iLeft = (screen.width - width) / 2,
+				iTop = (screen.height - height) / 2;
 			
 			var sOptions = 'toolbar=no,status=no,resizable=yes,dependent=yes';
 			
@@ -555,7 +745,7 @@ $(function(){
 				var c = document.getElementById(lastFileCtrl);
 				
 				if(c && c.value != url){
-				    c.value = url;
+					c.value = url;
 					SetUrlChange(c);
 				}
 				
@@ -564,7 +754,7 @@ $(function(){
 				var c = document.getElementById(lastImageCtrl);
 				
 				if(c && c.value != url){
-				    c.value = url;
+					c.value = url;
 					SetUrlChange(c);
 				}
 				
