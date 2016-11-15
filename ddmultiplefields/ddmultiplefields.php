@@ -5,6 +5,7 @@
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
+ * @uses PHP >= 5.4.
  * @uses MODXEvo.plugin.ManagerManager >= 0.7.
  * 
  * @param $tvs {string_commaSeparated} — Names of TV for which the widget is applying. @required
@@ -69,7 +70,7 @@ function mm_ddMultipleFields(
 		
 		if ($columnsData){
 			$columnsDataTemp = explode('||', $columnsData);
-			$columnsData = array();
+			$columnsData = [];
 			
 			foreach ($columnsDataTemp as $value){
 				//Евалим знение и записываем результат или исходное значени
