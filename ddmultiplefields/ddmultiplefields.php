@@ -8,18 +8,18 @@
  * @uses PHP >= 5.4.
  * @uses MODXEvo.plugin.ManagerManager >= 0.7.
  * 
- * @param $tvs {string_commaSeparated} — Names of TV for which the widget is applying. @required
+ * @param $fields {string_commaSeparated} — Names of TV for which the widget is applying. @required
  * @param $roles {string_commaSeparated} — The roles that the widget is applied to (when this parameter is empty then widget is applied to the all roles). Default: ''.
  * @param $templates {string_commaSeparated} — Templates IDs for which the widget is applying (empty value means the widget is applying to all templates). Default: ''.
  * @param $columns {string_commaSeparated} — Column types: field — field type column; text — text type column; textarea — multiple lines column; richtext — column with rich text editor; date — date column; id — hidden column containing unique id; select — list with options (parameter “columnsData”). Default: 'field'.
- * @param $columnsTitle {string_commaSeparated} — Columns titles. Default: ''.
- * @param $colWidth {string_commaSeparated} — Columns width (one value can be set). Default: 180;
- * @param $splY {string} — Strings separator. Default: '||'.
- * @param $splX {string} — Columns separator. Default: '::'.
- * @param $imgW {integer} — Maximum value of image preview width. Default: 300.
- * @param $imgH {integer} — Maximum value of image preview height. Default: 100.
- * @param $minRow {integer} — Minimum number of strings. Default: 0.
- * @param $maxRow {integer} — Maximum number of strings. Default: 0 (без лимита).
+ * @param $columnsTitles {string_commaSeparated} — Columns titles. Default: ''.
+ * @param $columnsWidth {string_commaSeparated} — Columns width (one value can be set). Default: 180;
+ * @param $rowDelimiter {string} — Strings separator. Default: '||'.
+ * @param $colDelimiter {string} — Columns separator. Default: '::'.
+ * @param $previewWidth {integer} — Maximum value of image preview width. Default: 300.
+ * @param $previewHeight {integer} — Maximum value of image preview height. Default: 100.
+ * @param $minRowsNumber {integer} — Minimum number of strings. Default: 0.
+ * @param $maxRowsNumber {integer} — Maximum number of strings. Default: 0 (без лимита).
  * @param $columnsData {separated string} — List of valid values in json format (with “||”). Default: ''.
  * 
  * @event OnDocFormPrerender
@@ -31,18 +31,18 @@
  */
 
 function mm_ddMultipleFields(
-	$tvs = '',
+	$fields = '',
 	$roles = '',
 	$templates = '',
 	$columns = 'field',
-	$columnsTitle = '',
-	$colWidth = '180',
-	$splY = '||',
-	$splX = '::',
-	$imgW = 300,
-	$imgH = 100,
-	$minRow = 0,
-	$maxRow = 0,
+	$columnsTitles = '',
+	$columnsWidth = '180',
+	$rowDelimiter = '||',
+	$colDelimiter = '::',
+	$previewWidth = 300,
+	$previewHeight = 100,
+	$minRowsNumber = 0,
+	$maxRowsNumber = 0,
 	$columnsData = ''
 ){
 	if (!useThisRule($roles, $templates)){return;}
@@ -60,7 +60,7 @@ function mm_ddMultipleFields(
 		
 		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
-		$output .= includeJsCss($widgetDir.'jQuery.ddMM.mm_ddMultipleFields.js', 'html', 'jQuery.ddMM.mm_ddMultipleFields', '1.1.1');
+		$output .= includeJsCss($widgetDir.'jQuery.ddMM.mm_ddMultipleFields.js', 'html', 'jQuery.ddMM.mm_ddMultipleFields', '2.0');
 		
 		$output .= includeJsCss('$j.ddMM.lang.edit = "'.$_lang['edit'].'";', 'html', 'mm_ddMultipleFields_plain', '1', true, 'js');
 		
@@ -82,10 +82,10 @@ function mm_ddMultipleFields(
 		}
 		
 		//Стиль превью изображения
-		$stylePrewiew = 'max-width:'.$imgW.'px; max-height:'.$imgH.'px; margin: 4px 0; cursor: pointer;';
+		$previewStyle = 'max-width:'.$previewWidth.'px; max-height:'.$previewHeight.'px; margin: 4px 0; cursor: pointer;';
 		
-		$tvsMas = tplUseTvs($mm_current_page['template'], $tvs, 'image,file,text,email,textarea', 'id,type');
-		if ($tvsMas == false){return;}
+		$fieldsArr = tplUseTvs($mm_current_page['template'], $fields, 'image,file,text,email,textarea', 'id,type');
+		if ($fieldsArr == false){return;}
 		
 		$output .= '//---------- mm_ddMultipleFields :: Begin -----'.PHP_EOL;
 		
@@ -94,30 +94,30 @@ function mm_ddMultipleFields(
 		//Находим колонки, заданные как «field», теперь их нужно будет заменить на «image» и «file» соответственно
 		$columns_fieldIndex = array_keys($columns, 'field');
 		
-		foreach ($tvsMas as $tv){
+		foreach ($fieldsArr as $field){
 			//For backward compatibility
 			if (
-				$tv['type'] == 'image' ||
-				$tv['type'] == 'file'
+				$field['type'] == 'image' ||
+				$field['type'] == 'file'
 			){
 				//Проходимся по всем колонкам «field» и заменяем на соответствующий тип
 				foreach($columns_fieldIndex as $val){
-					$columns[$val] = $tv['type'];
+					$columns[$val] = $field['type'];
 				}
 			}
 			
 			$output .=
 '
-$j("#tv'.$tv['id'].'").mm_ddMultipleFields({
-	splY: "'.$splY.'",
-	splX: "'.$splX.'",
-	coloumns: "'.implode(',', $columns).'",
-	coloumnsTitle: "'.$columnsTitle.'",
-	coloumnsData: "'.$columnsData.'",
-	colWidth: "'.$colWidth.'",
-	imageStyle: "'.$stylePrewiew.'",
-	minRow: "'.$minRow.'",
-	maxRow: "'.$maxRow.'"
+$j("#tv'.$field['id'].'").mm_ddMultipleFields({
+	rowDelimiter: "'.$rowDelimiter.'",
+	colDelimiter: "'.$colDelimiter.'",
+	columns: "'.implode(',', $columns).'",
+	columnsTitles: "'.$columnsTitles.'",
+	columnsData: "'.$columnsData.'",
+	columnsWidth: "'.$columnsWidth.'",
+	previewStyle: "'.$previewStyle.'",
+	minRowsNumber: "'.$minRowsNumber.'",
+	maxRowsNumber: "'.$maxRowsNumber.'"
 });
 ';
 		}
