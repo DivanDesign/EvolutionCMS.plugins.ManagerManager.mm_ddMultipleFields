@@ -114,8 +114,8 @@ function mm_ddMultipleFields($params){
 		//Стиль превью изображения
 		$previewStyle = 'max-width:'.$params->previewWidth.'px; max-height:'.$params->previewHeight.'px; margin: 4px 0; cursor: pointer;';
 		
-		$fieldsArr = tplUseTvs($mm_current_page['template'], $params->fields, 'image,file,text,email,textarea', 'id,type');
-		if ($fieldsArr == false){return;}
+		$params->fields = tplUseTvs($mm_current_page['template'], $params->fields, 'image,file,text,email,textarea', 'id,type,name');
+		if ($params->fields == false){return;}
 		
 		$output .= '//---------- mm_ddMultipleFields :: Begin -----'.PHP_EOL;
 		
@@ -124,7 +124,7 @@ function mm_ddMultipleFields($params){
 		//Находим колонки, заданные как «field», теперь их нужно будет заменить на «image» и «file» соответственно
 		$columns_fieldIndex = array_keys($params->columns, 'field');
 		
-		foreach ($fieldsArr as $field){
+		foreach ($params->fields as $field){
 			//For backward compatibility
 			if (
 				$field['type'] == 'image' ||
@@ -138,7 +138,7 @@ function mm_ddMultipleFields($params){
 			
 			$output .=
 '
-$j("#tv'.$field['id'].'").mm_ddMultipleFields({
+$j.ddMM.fields.'.$field['name'].'.$elem.mm_ddMultipleFields({
 	rowDelimiter: "'.$params->rowDelimiter.'",
 	colDelimiter: "'.$params->colDelimiter.'",
 	columns: "'.implode(',', $params->columns).'",
