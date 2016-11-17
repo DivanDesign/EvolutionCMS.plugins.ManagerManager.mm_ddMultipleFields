@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.1 (2016-11-17)
+ * @version 2.1.2 (2016-11-18)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -45,7 +45,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @prop instances[item].$parent {jQuery} — TV field DOM parent.
 	 * @prop instances[item].$originalField {jQuery} — TV field.
 	 * @prop instances[item].$table {jQuery} — Multiple field table.
-	 * @prop instances[item].$addButton {jQuery} — New row adding button.
+	 * @prop instances[item].$addButtons {jQuery} — New row adding buttons.
 	 * @prop instances[item].$currentField {jQuery} — Current field from table.
 	 */
 	instances: {},
@@ -150,7 +150,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.0 (2016-11-17)
+	 * @version 4.1 (2016-11-18)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -180,6 +180,8 @@ $.ddMM.mm_ddMultipleFields = {
 		var value = instance.value.split(instance.rowDelimiter);
 		//Это поле нужно было только для инициализации
 		delete instance.value;
+		//Инициализируем кнопки +
+		instance.$addButtons = $();
 		
 		//Сохраняем экземпляр текущего объекта с правилами
 		_this.instances[instance.id] = instance;
@@ -238,9 +240,6 @@ $.ddMM.mm_ddMultipleFields = {
 			value.length = instance.minRowsNumber;
 		}
 		
-		//Создаём кнопку +
-		instance.$addButton = _this.makeAddButton({id: instance.id});
-		
 		for (
 			var i = 0, len = value.length;
 			i < len;
@@ -253,9 +252,6 @@ $.ddMM.mm_ddMultipleFields = {
 			});
 		}
 		
-		//Втыкаем кнопку + куда надо
-		instance.$addButton.appendTo(instance.$table.find('.ddFieldBlock:last .ddFieldCol:last'));
-		
 		//Добавляем возможность перетаскивания
 		instance.$table.sortable({
 			items: 'tr:has(td)',
@@ -265,23 +261,20 @@ $.ddMM.mm_ddMultipleFields = {
 			placeholder: 'ui-state-highlight',
 			start: function(event, ui){
 				ui.placeholder.html('<td colspan="' + (instance.columns.length + 2) + '"><div></div></td>').find('div').css('height', ui.item.height());
-			},
-			stop: function(event, ui){
-				//Находим родителя таблицы, вызываем функцию обновления поля
-				_this.moveAddButton({id: instance.id});
 			}
 		});
 	},
 	
 	/**
 	 * @method makeFieldRow
-	 * @version 2.0.2 (2016-11-17)
+	 * @version 2.1 (2016-11-18)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
 	 * @param params {object_plain} — The parameters.
 	 * @param params.id {string} — TV id.
 	 * @param [params.value=''] {string} — Row value.
+	 * @param [params.$insertAfter=''] {string} — Row value.
 	 * 
 	 * @returns {jQuery}
 	 */
@@ -293,21 +286,25 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		var _this = this;
 		
-		//Если задано максимальное количество строк
-		if (_this.instances[params.id].maxRowsNumber){
-			//Общее количество строк на данный момент
-			var fieldBlocksLen = _this.instances[params.id].$table.find('.ddFieldBlock').length;
-			
+		//Общее количество строк на данный момент
+		var fieldBlocksLen = _this.instances[params.id].$table.find('.ddFieldBlock').length;
+		
+		if (
+			//Если задано максимальное количество строк
+			_this.instances[params.id].maxRowsNumber &&
 			//Проверяем превышает ли уже количество строк максимальное
-			if (fieldBlocksLen >= _this.instances[params.id].maxRowsNumber){
-				return;
-			//Если будет равно максимуму при создании этого поля
-			}else if (fieldBlocksLen + 1 == _this.instances[params.id].maxRowsNumber){
-				_this.instances[params.id].$addButton.attr('disabled', true);
-			}
+			fieldBlocksLen >= _this.instances[params.id].maxRowsNumber
+		){
+			return;
 		}
 		
-		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo(_this.instances[params.id].$table);
+		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>');
+		
+		if (params.$insertAfter){
+			$fieldBlock.insertAfter(params.$insertAfter);
+		}else{
+			$fieldBlock.appendTo(_this.instances[params.id].$table);
+		}
 		
 		//Разбиваем переданное значение на колонки
 		params.value = params.value.split(_this.instances[params.id].colDelimiter);
@@ -410,11 +407,28 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		});
 		
+		var $lastCol = _this.makeFieldCol({$fieldRow: $fieldBlock});
+		
 		//Create DeleteButton
 		_this.makeDeleteButton({
 			id: params.id,
-			$fieldCol: _this.makeFieldCol({$fieldRow: $fieldBlock})
+			$fieldCol: $lastCol
 		});
+		
+		//Create addButton
+		_this.makeAddButton({
+			id: params.id,
+			$fieldCol: $lastCol
+		});
+		
+		if (
+			//Если задано максимальное количество строк
+			_this.instances[params.id].maxRowsNumber &&
+			//Если будет равно максимуму при создании этого поля
+			fieldBlocksLen + 1 == _this.instances[params.id].maxRowsNumber
+		){
+			_this.instances[params.id].$addButtons.attr('disabled', true);
+		}
 		
 		//Специально для полей, содержащих изображения необходимо инициализировать
 		$('.ddFieldCol:has(.ddField_image) .ddField', $fieldBlock).trigger('change.ddEvents');
@@ -439,7 +453,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeDeleteButton
-	 * @version 2.0.1 (2016-11-17)
+	 * @version 2.0.2 (2016-11-18)
 	 * 
 	 * @desc Makes delete button.
 	 * 
@@ -470,20 +484,12 @@ $.ddMM.mm_ddMultipleFields = {
 			
 			//Если больше одной строки, то можно удалить текущую строчку
 			if ($par.siblings('.ddFieldBlock').length > 0){
-				$par.fadeOut(300, function(){
-					//Если контейнер имеет кнопку добалвения, перенесём её
-					if ($par.find('.ddAddButton').length > 0){
-						_this.moveAddButton({
-							id: params.id,
-							$target: $par.prev('.ddFieldBlock')
-						});
-					}
-					
+				$par.animate({opacity: 0}, 300, function(){
 					//Сносим
 					$par.remove();
 					
-					//При любом удалении показываем кнопку добавления
-					_this.instances[params.id].$addButton.removeAttr('disabled');
+					//При любом удалении показываем кнопки добавления
+					_this.instances[params.id].$addButtons.removeAttr('disabled');
 					
 					return;
 				});
@@ -493,47 +499,28 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeAddButton
-	 * @version 2.0 (2016-11-16)
+	 * @version 3.0 (2016-11-18)
 	 * 
 	 * @desc Функция создания кнопки +, вызывается при инициализации.
 	 * 
 	 * @param params {object_plain} — The parameters.
 	 * @param params.id {string} — TV id.
-	 * 
-	 * @returns {jQuery}
-	 */
-	makeAddButton: function(params){
-		var _this = this;
-		
-		return $('<input class=\"ddAddButton\" type=\"button\" value=\"+\" />').on('click', function(){
-			//Вешаем на кнопку создание новой строки
-			$(this).appendTo(_this.makeFieldRow({id: params.id}).find('.ddFieldCol:last'));
-		});
-	},
-	
-	/**
-	 * @method moveAddButton
-	 * @version 2.0.1 (2016-11-17)
-	 * 
-	 * @desc Перемещение кнопки.
-	 * 
-	 * @param params {object_plain} — The parameters.
-	 * @param params.id {string} — TV id.
-	 * @param [params.$target] {string} — Target container.
+	 * @param params.$fieldCol {jQuery} — Target container.
 	 * 
 	 * @returns {void}
 	 */
-	moveAddButton: function(params){
-		var _this = this;
+	makeAddButton: function(params){
+		var _this = this,
+			//Вешаем на кнопку создание новой строки
+			$button = $('<input class="ddAddButton" type="button" value="+" />').appendTo(params.$fieldCol).on('click', function(){
+				_this.makeFieldRow({
+					id: params.id,
+					$insertAfter: $(this).parents('.ddFieldBlock:first')
+				}).css({opacity: 0}).animate({opacity: 1}, 300);
+			});
 		
-		//Defaults
-		params = $.extend({
-			//Если не передали, куда вставлять, вставляем в самый конец
-			$target: _this.instances[params.id].$table.find('.ddFieldBlock:last')
-		}, params);
-		
-		//Находим кнопку добавления и переносим куда надо
-		_this.instances[params.id].$addButton.appendTo(params.$target.find('.ddFieldCol:last'));
+		//Сохраняем в коллекцию
+		_this.instances[params.id].$addButtons = _this.instances[params.id].$addButtons.add($button);
 	},
 	
 	/**
