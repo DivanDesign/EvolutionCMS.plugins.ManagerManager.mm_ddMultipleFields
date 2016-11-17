@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1 (2016-11-16)
+ * @version 2.1.1 (2016-11-17)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -31,19 +31,31 @@ $.ddMM.mm_ddMultipleFields = {
 		//Максимальное количество строк
 		maxRowsNumber: 0
 	},
-//	Все экземпляры (TV). Структура: {
-//		'id': {
-//			currentField,
-//			$addButton,
-//			+Всё, что передано параметрально (см. this.defaults)
-//		}
-//	}
+	/**
+	 * @prop instances {object_plain} — All instances.
+	 * @prop instances[item] {object_plain} — Item, when key — TV id.
+	 * @prop instances[item].id {string} — Unique TV id (similar to key).
+	 * @prop instances[item].rowDelimiter {string} — Разделитель строк.
+	 * @prop instances[item].colDelimiter {string} — Разделитель колонок.
+	 * @prop instances[item].columns {array} — Колонки. Default: 'field'.
+	 * @prop instances[item].columnsTitles {array} — Заголовки колонок.
+	 * @prop instances[item].columnsData {array} — Данные колонок.
+	 * @prop instances[item].columnsWidth {array} — Ширины колонок.
+	 * @prop instances[item].previewStyle {string} — Стиль превьюшек.
+	 * @prop instances[item].minRowsNumber {integer} — Минимальное количество строк.
+	 * @prop instances[item].maxRowsNumber {integer} — Максимальное количество строк.
+	 * @prop instances[item].$parent {jQuery} — TV field DOM parent.
+	 * @prop instances[item].$originalField {jQuery} — TV field.
+	 * @prop instances[item].$table {jQuery} — Multiple field table.
+	 * @prop instances[item].$addButton {jQuery} — New row adding button.
+	 * @prop instances[item].$currentField {jQuery} — Current field from table.
+	 */
 	instances: {},
 	richtextWindow: null,
 	
 	/**
 	 * @method updateField
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2016-11-17)
 	 * 
 	 * @desc Обновляет мульти-поле, берёт значение из оригинального поля.
 	 * 
@@ -56,17 +68,17 @@ $.ddMM.mm_ddMultipleFields = {
 		var _this = this;
 		
 		//Если есть текущее поле
-		if (_this.instances[params.id].currentField){
+		if (_this.instances[params.id].$currentField){
 			//Задаём значение текущему полю (берём у оригинального поля), запускаем событие изменения
-			_this.instances[params.id].currentField.val($.trim($('#' + params.id).val())).trigger('change.ddEvents');
+			_this.instances[params.id].$currentField.val($.trim(_this.instances[params.id].$originalField.val())).trigger('change.ddEvents');
 			//Забываем текущее поле (ибо уже обработали)
-			_this.instances[params.id].currentField = false;
+			_this.instances[params.id].$currentField = false;
 		}
 	},
 	
 	/**
 	 * @method updateTv
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2016-11-17)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -80,7 +92,7 @@ $.ddMM.mm_ddMultipleFields = {
 			masRows = new Array();
 		
 		//Перебираем все строки
-		$('#' + params.id + 'ddMultipleField .ddFieldBlock').each(function(){
+		_this.instances[params.id].$table.find('.ddFieldBlock').each(function(){
 			var $this = $(this),
 				masCol = new Array(),
 				id_field = {
@@ -135,106 +147,122 @@ $.ddMM.mm_ddMultipleFields = {
 		});
 		
 		//Записываем значение в оригинальное поле
-		$('#' + params.id).val(masRows.join(_this.instances[params.id].rowDelimiter));
+		_this.instances[params.id].$originalField.val(masRows.join(_this.instances[params.id].rowDelimiter));
 	},
 	
 	/**
 	 * @method init
-	 * @version 2.0 (2016-11-16)
+	 * @version 3.0 (2016-11-17)
 	 * 
 	 * @desc Инициализация.
 	 * 
 	 * @param params {object_plain} — The parameters.
 	 * @param params.id {string} — TV id.
 	 * @param params.value {string} — TV value.
-	 * @param params.$target {jQuery} — TV parent.
+	 * @param params.$parent {jQuery} — TV parent.
+	 * @param params.$originalField {jQuery} — TV.
+	 * @param params.rowDelimiter {string} — Разделитель строк.
+	 * @param params.colDelimiter {string} — Разделитель колонок.
+	 * @param params.columns {string_commaSeparated|array} — Колонки.
+	 * @param params.columnsTitles {string_commaSeparated|array} — Заголовки колонок.
+	 * @param params.columnsData {separated string|array} — Данные колонок.
+	 * @param params.columnsWidth {string_commaSeparated} — Ширины колонок.
+	 * @param params.previewStyle {string} — Стиль превьюшек.
+	 * @param params.minRowsNumber {integer} — Минимальное количество строк.
+	 * @param params.maxRowsNumber {integer} — Максимальное количество строк.
 	 * 
 	 * @returns {void}
 	 */
-	init: function(params){
-		var _this = this,
-			//Делаем таблицу мульти-полей, вешаем на таблицу функцию обновления оригинального поля
-			$ddMultipleField = $('<table class="ddMultipleField" id="' + params.id + 'ddMultipleField"></table>').appendTo(params.$target);
+	init: function(instance){
+		var _this = this;
+		
+		//Разбиваем значение по строкам
+		var value = instance.value.split(instance.rowDelimiter);
+		//Это поле нужно было только для инициализации
+		delete instance.value;
+		
+		//Сохраняем экземпляр текущего объекта с правилами
+		_this.instances[instance.id] = instance;
+		
+		//Делаем таблицу мульти-поля
+		instance.$table = $('<table class="ddMultipleField" id="' + instance.id + 'ddMultipleField"></table>').appendTo(instance.$parent);
 		
 		//Если есть хоть один заголовок
-		if (_this.instances[params.id].columnsTitles.length > 0){
+		if (instance.columnsTitles.length > 0){
 			var text = '';
 			
 			//Создадим шапку (перебираем именно колонки!)
-			$.each(_this.instances[params.id].columns, function(key, val){
+			$.each(instance.columns, function(key, val){
 				//Если это колонка с id
 				if (val == 'id'){
 					//Вставим пустое значение в массив с заголовками
-					_this.instances[params.id].columnsTitles.splice(key, 0, '');
+					instance.columnsTitles.splice(key, 0, '');
 					
 					text += '<th style="display: none;"></th>';
 				}else{
 					//Если такого значения нет — сделаем
-					if (!_this.instances[params.id].columnsTitles[key]){
-						_this.instances[params.id].columnsTitles[key] = '';
+					if (!instance.columnsTitles[key]){
+						instance.columnsTitles[key] = '';
 					}
 					
-					text += '<th>' + (_this.instances[params.id].columnsTitles[key]) + '</th>';
+					text += '<th>' + (instance.columnsTitles[key]) + '</th>';
 				}
 			});
 			
-			$('<tr><th></th>' + text + '<th></th></tr>').appendTo($ddMultipleField);
+			$('<tr><th></th>' + text + '<th></th></tr>').appendTo(instance.$table);
 		}
-		
-		//Делаем новые мульти-поля
-		var arr = params.value.split(_this.instances[params.id].rowDelimiter);
 		
 		//Проверяем на максимальное и минимальное количество строк
 		if (
-			_this.instances[params.id].maxRowsNumber &&
-			arr.length > _this.instances[params.id].maxRowsNumber
+			instance.maxRowsNumber &&
+			value.length > instance.maxRowsNumber
 		){
-			arr.length = _this.instances[params.id].maxRowsNumber;
+			value.length = instance.maxRowsNumber;
 		}else if (
-			_this.instances[params.id].minRowsNumber &&
-			arr.length < _this.instances[params.id].minRowsNumber
+			instance.minRowsNumber &&
+			value.length < instance.minRowsNumber
 		){
-			arr.length = _this.instances[params.id].minRowsNumber;
+			value.length = instance.minRowsNumber;
 		}
 		
 		//Создаём кнопку +
-		_this.instances[params.id].$addButton = _this.makeAddButton({id: params.id});
+		instance.$addButton = _this.makeAddButton({id: instance.id});
 		
 		for (
-			var i = 0, len = arr.length;
+			var i = 0, len = value.length;
 			i < len;
 			i++
 		){
 			//В случае, если размер массива был увеличен по minRowsNumber, значением будет undefined, посему зафигачим пустую строку
 			_this.makeFieldRow({
-				id: params.id,
-				value: arr[i] || ''
+				id: instance.id,
+				value: value[i] || ''
 			});
 		}
 		
 		//Втыкаем кнопку + куда надо
-		_this.instances[params.id].$addButton.appendTo($('#' + params.id + 'ddMultipleField .ddFieldBlock:last .ddFieldCol:last'));
+		instance.$addButton.appendTo(instance.$table.find('.ddFieldBlock:last .ddFieldCol:last'));
 		
 		//Добавляем возможность перетаскивания
-		$ddMultipleField.sortable({
+		instance.$table.sortable({
 			items: 'tr:has(td)',
 			handle: '.ddSortHandle',
 			cursor: 'n-resize',
 			axis: 'y',
 			placeholder: 'ui-state-highlight',
 			start: function(event, ui){
-				ui.placeholder.html('<td colspan="' + (_this.instances[params.id].columns.length + 2) + '"><div></div></td>').find('div').css('height', ui.item.height());
+				ui.placeholder.html('<td colspan="' + (instance.columns.length + 2) + '"><div></div></td>').find('div').css('height', ui.item.height());
 			},
 			stop: function(event, ui){
 				//Находим родителя таблицы, вызываем функцию обновления поля
-				_this.moveAddButton({id: params.id});
+				_this.moveAddButton({id: instance.id});
 			}
 		});
 	},
 	
 	/**
 	 * @method makeFieldRow
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2016-11-17)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
@@ -255,24 +283,18 @@ $.ddMM.mm_ddMultipleFields = {
 		//Если задано максимальное количество строк
 		if (_this.instances[params.id].maxRowsNumber){
 			//Общее количество строк на данный момент
-			var fieldBlocksLen = $('#' + params.id + 'ddMultipleField .ddFieldBlock').length;
+			var fieldBlocksLen = _this.instances[params.id].$table.find('.ddFieldBlock').length;
 			
 			//Проверяем превышает ли уже количество строк максимальное
-			if (
-				_this.instances[params.id].maxRowsNumber &&
-				fieldBlocksLen >= _this.instances[params.id].maxRowsNumber
-			){
+			if (fieldBlocksLen >= _this.instances[params.id].maxRowsNumber){
 				return;
 			//Если будет равно максимуму при создании этого поля
-			}else if (
-				_this.instances[params.id].maxRowsNumber &&
-				fieldBlocksLen + 1 == _this.instances[params.id].maxRowsNumber
-			){
+			}else if (fieldBlocksLen + 1 == _this.instances[params.id].maxRowsNumber){
 				_this.instances[params.id].$addButton.attr('disabled', true);
 			}
 		}
 		
-		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo($('#' + params.id + 'ddMultipleField'));
+		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>').appendTo(_this.instances[params.id].$table);
 		
 		//Разбиваем переданное значение на колонки
 		params.value = params.value.split(_this.instances[params.id].colDelimiter);
@@ -303,7 +325,7 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				//Create Attach browse button
 				$('<input class="ddAttachButton" type="button" value="Вставить" />').insertAfter($field).on('click', function(){
-					_this.instances[params.id].currentField = $(this).siblings('.ddField');
+					_this.instances[params.id].$currentField = $(this).siblings('.ddField');
 					BrowseServer(params.id);
 				});
 			//Если текущая колонка является файлом
@@ -317,7 +339,7 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				//Create Attach browse button
 				$('<input class="ddAttachButton" type="button" value="Вставить" />').insertAfter($field).on('click', function(){
-					_this.instances[params.id].currentField = $(this).siblings('.ddField');
+					_this.instances[params.id].$currentField = $(this).siblings('.ddField');
 					BrowseFileServer(params.id);
 				});	
 			//Если id
@@ -406,7 +428,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeDeleteButton
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2016-11-17)
 	 * 
 	 * @desc Makes delete button.
 	 * 
@@ -423,7 +445,7 @@ $.ddMM.mm_ddMultipleFields = {
 			//Проверяем на минимальное количество строк
 			if (
 				_this.instances[params.id].minRowsNumber &&
-				$('#' + params.id + 'ddMultipleField .ddFieldBlock').length <= _this.instances[params.id].minRowsNumber
+				_this.instances[params.id].$table.find('.ddFieldBlock').length <= _this.instances[params.id].minRowsNumber
 			){
 				return;
 			}
@@ -480,7 +502,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method moveAddButton
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2016-11-17)
 	 * 
 	 * @desc Перемещение кнопки.
 	 * 
@@ -491,13 +513,13 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @returns {void}
 	 */
 	moveAddButton: function(params){
+		var _this = this;
+		
 		//Defaults
 		params = $.extend({
 			//Если не передали, куда вставлять, вставляем в самый конец
-			$target: $('#' + params.id + 'ddMultipleField .ddFieldBlock:last')
+			$target: _this.instances[params.id].$table.find('.ddFieldBlock:last')
 		}, params);
-		
-		var _this = this;
 		
 		//Находим кнопку добавления и переносим куда надо
 		_this.instances[params.id].$addButton.appendTo(params.$target.find('.ddFieldCol:last'));
@@ -700,20 +722,20 @@ $.ddMM.mm_ddMultipleFields = {
 
 /**
  * jQuery.fn.mm_ddMultipleFields
- * @version 2.0.1 (2016-11-16)
+ * @version 2.0.2 (2016-11-17)
  * 
  * @desc Делает мультиполя.
  * 
- * @param params {object_plain} — The parameters.
- * @param params.rowDelimiter {string} — Разделитель строк. Default: '||'.
- * @param params.colDelimiter {string} — Разделитель колонок. Default: '::'.
- * @param params.columns {string_commaSeparated|array} — Колонки. Default: 'field'.
- * @param params.columnsTitles {string_commaSeparated|array} — Заголовки колонок. Default: ''.
- * @param params.columnsData {separated string|array} — Данные колонок. Default: ''.
- * @param params.columnsWidth {string_commaSeparated} — Ширины колонок. Default: '180'.
- * @param params.previewStyle {string} — Стиль превьюшек. Default: ''.
- * @param params.minRowsNumber {integer} — Минимальное количество строк. Default: 0.
- * @param params.maxRowsNumber {integer} — Максимальное количество строк. Default: 0.
+ * @param [params] {object_plain} — The parameters.
+ * @param [params.rowDelimiter='||'] {string} — Разделитель строк.
+ * @param [params.colDelimiter='::'] {string} — Разделитель колонок.
+ * @param [params.columns='field'] {string_commaSeparated|array} — Колонки.
+ * @param [params.columnsTitles=''] {string_commaSeparated|array} — Заголовки колонок.
+ * @param [params.columnsData=''] {separated string|array} — Данные колонок.
+ * @param [params.columnsWidth='180'] {string_commaSeparated} — Ширины колонок.
+ * @param [params.previewStyle=''] {string} — Стиль превьюшек.
+ * @param [params.minRowsNumber=0] {integer} — Минимальное количество строк.
+ * @param [params.maxRowsNumber=0] {integer} — Максимальное количество строк.
  * 
  * @copyright 2013–2014 [DivanDesign]{@link http://www.DivanDesign.biz }
  */
@@ -740,9 +762,6 @@ $.fn.mm_ddMultipleFields = function(params){
 			
 			//Проверим на существование (возникали какие-то непонятные варианты, при которых два раза вызов был)
 			if (!_this.instances[id]){
-				//Инициализация текущего объекта с правилами
-				_this.instances[id] = $.extend({}, params);
-				
 				//Скрываем оригинальное поле
 				$this.removeClass('imageField').off('.mm_widget_showimagetvs').addClass('originalField').hide();
 				
@@ -756,11 +775,12 @@ $.fn.mm_ddMultipleFields = function(params){
 				$this.next('input[type=button]').hide();
 				
 				//Создаём мульти-поле
-				_this.init({
+				_this.init($.extend({
 					id: id,
 					value: $this.val(),
-					$target: $this.parent()
-				});
+					$parent: $this.parent(),
+					$originalField: $this
+				}, params));
 			}
 		}).trigger('load');
 	});
