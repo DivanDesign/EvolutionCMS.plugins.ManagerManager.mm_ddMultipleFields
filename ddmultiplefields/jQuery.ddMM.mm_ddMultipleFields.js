@@ -17,13 +17,9 @@ $.ddMM.mm_ddMultipleFields = {
 		//Разделитель колонок
 		colDelimiter: '::',
 		//Колонки
-		columns: 'field',
-		//Заголовки колонок
-		columnsTitles: '',
-		//Данные колонок
-		columnsData: '',
-		//Ширины колонок
-		columnsWidth: '180',
+		columns: [
+			{type: 'text'}
+		],
 		//Стиль превьюшек
 		previewStyle: '',
 		//Минимальное количество строк
@@ -38,9 +34,11 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @prop instances[item].rowDelimiter {string} — Разделитель строк.
 	 * @prop instances[item].colDelimiter {string} — Разделитель колонок.
 	 * @prop instances[item].columns {array} — Колонки. Default: 'field'.
-	 * @prop instances[item].columnsTitles {array} — Заголовки колонок.
-	 * @prop instances[item].columnsData {array} — Данные колонок.
-	 * @prop instances[item].columnsWidth {array} — Ширины колонок.
+	 * @prop instances[item].columns[i] {object_plain} — Колонка.
+	 * @prop instances[item].columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
+	 * @prop instances[item].columns[i].title {string} — Заголовок.
+	 * @prop instances[item].columns[i].width {string} — Ширина.
+	 * @prop instances[item].columns[i].data {string_JSON_array} — Данные (для type == 'select').
 	 * @prop instances[item].previewStyle {string} — Стиль превьюшек.
 	 * @prop instances[item].minRowsNumber {integer} — Минимальное количество строк.
 	 * @prop instances[item].maxRowsNumber {integer} — Максимальное количество строк.
@@ -78,7 +76,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 2.0.1 (2016-11-17)
+	 * @version 2.0.2 (2016-11-17)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -104,7 +102,7 @@ $.ddMM.mm_ddMultipleFields = {
 			//Перебираем все колонки, закидываем значения в массив
 			$this.find('.ddField').each(function(index){
 				//Если поле с типом id TODO: Какой смысл по всех этих манипуляциях?
-				if (_this.instances[params.id].columns[index] == 'id'){
+				if (_this.instances[params.id].columns[index].type == 'id'){
 					id_field.index = index;
 					id_field.$field = $(this);
 					
@@ -118,7 +116,7 @@ $.ddMM.mm_ddMultipleFields = {
 				}
 				
 				//Если колонка типа richtext
-				if (_this.instances[params.id].columns[index] == 'richtext'){
+				if (_this.instances[params.id].columns[index].type == 'richtext'){
 					//Собираем значения строки в массив
 					masCol.push($.trim($(this).html()));
 				}else{
@@ -152,7 +150,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 3.0 (2016-11-17)
+	 * @version 4.0 (2016-11-17)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -164,9 +162,11 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @param params.rowDelimiter {string} — Разделитель строк.
 	 * @param params.colDelimiter {string} — Разделитель колонок.
 	 * @param params.columns {string_commaSeparated|array} — Колонки.
-	 * @param params.columnsTitles {string_commaSeparated|array} — Заголовки колонок.
-	 * @param params.columnsData {separated string|array} — Данные колонок.
-	 * @param params.columnsWidth {string_commaSeparated} — Ширины колонок.
+	 * @param params.columns[i] {object_plain} — Колонка.
+	 * @param params.columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
+	 * @param [params.columns[i].title=''] {string} — Заголовок.
+	 * @param [params.columns[i].width=180] {integer} — Ширина.
+	 * @param [params.columns[i].data=''] {integer} — Данные (для type == 'select').
 	 * @param params.previewStyle {string} — Стиль превьюшек.
 	 * @param params.minRowsNumber {integer} — Минимальное количество строк.
 	 * @param params.maxRowsNumber {integer} — Максимальное количество строк.
@@ -187,29 +187,42 @@ $.ddMM.mm_ddMultipleFields = {
 		//Делаем таблицу мульти-поля
 		instance.$table = $('<table class="ddMultipleField" id="' + instance.id + 'ddMultipleField"></table>').appendTo(instance.$parent);
 		
-		//Если есть хоть один заголовок
-		if (instance.columnsTitles.length > 0){
-			var text = '';
-			
-			//Создадим шапку (перебираем именно колонки!)
-			$.each(instance.columns, function(key, val){
-				//Если это колонка с id
-				if (val == 'id'){
-					//Вставим пустое значение в массив с заголовками
-					instance.columnsTitles.splice(key, 0, '');
-					
-					text += '<th style="display: none;"></th>';
+		//Шапка таблицы
+		var tableHeaderHtml = '',
+			//По умолчанию без шапки
+			showTableHeader = false;
+		
+		//Перебираем колонки
+		$.each(instance.columns, function(key, val){
+			//Defaults
+			if (!val.title){
+				instance.columns[key].title = '';
+			}else{
+				showTableHeader = true;
+			}
+			if (!val.width){
+				if (key > 0){
+					//Take from preverious column
+					instance.columns[key].width = instance.columns[key - 1].width;
 				}else{
-					//Если такого значения нет — сделаем
-					if (!instance.columnsTitles[key]){
-						instance.columnsTitles[key] = '';
-					}
-					
-					text += '<th>' + (instance.columnsTitles[key]) + '</th>';
+					//Or by default
+					instance.columns[key].width = 180;
 				}
-			});
+			}
+			if (!val.data){
+				instance.columns[key].data = '';
+			}
 			
-			$('<tr><th></th>' + text + '<th></th></tr>').appendTo(instance.$table);
+			//Если это колонка с id
+			if (val.type == 'id'){
+				tableHeaderHtml += '<th style="display: none;"></th>';
+			}else{
+				tableHeaderHtml += '<th>' + val.title + '</th>';
+			}
+		});
+		
+		if (showTableHeader){
+			$('<tr><th></th>' + tableHeaderHtml + '<th></th></tr>').appendTo(instance.$table);
 		}
 		
 		//Проверяем на максимальное и минимальное количество строк
@@ -262,7 +275,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeFieldRow
-	 * @version 2.0.1 (2016-11-17)
+	 * @version 2.0.2 (2016-11-17)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
@@ -304,17 +317,15 @@ $.ddMM.mm_ddMultipleFields = {
 		//Перебираем колонки
 		$.each(_this.instances[params.id].columns, function(key){
 			if (!params.value[key]){params.value[key] = '';}
-			if (!_this.instances[params.id].columnsTitles[key]){_this.instances[params.id].columnsTitles[key] = '';}
-			if (!_this.instances[params.id].columnsWidth[key] || _this.instances[params.id].columnsWidth[key] == ''){_this.instances[params.id].columnsWidth[key] = _this.instances[params.id].columnsWidth[key - 1];}
 			
 			var $col = _this.makeFieldCol({$fieldRow: $fieldBlock});
 			
 			//Если текущая колонка является изображением
-			if(_this.instances[params.id].columns[key] == 'image'){
+			if(_this.instances[params.id].columns[key].type == 'image'){
 				$field = _this.makeText({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 				
@@ -329,11 +340,11 @@ $.ddMM.mm_ddMultipleFields = {
 					BrowseServer(params.id);
 				});
 			//Если текущая колонка является файлом
-			}else if(_this.instances[params.id].columns[key] == 'file'){
+			}else if(_this.instances[params.id].columns[key].type == 'file'){
 				$field = _this.makeText({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 				
@@ -343,7 +354,7 @@ $.ddMM.mm_ddMultipleFields = {
 					BrowseFileServer(params.id);
 				});	
 			//Если id
-			}else if (_this.instances[params.id].columns[key] == 'id'){
+			}else if (_this.instances[params.id].columns[key].type == 'id'){
 				$field = _this.makeText({
 					value: params.value[key],
 					title: '',
@@ -357,43 +368,43 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				$col.hide();
 			//Если селект
-			}else if(_this.instances[params.id].columns[key] == 'select'){
+			}else if(_this.instances[params.id].columns[key].type == 'select'){
 				_this.makeSelect({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					data: _this.instances[params.id].columnsData[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					data: _this.instances[params.id].columns[key].data,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 			//Если дата
-			}else if(_this.instances[params.id].columns[key] == 'date'){
+			}else if(_this.instances[params.id].columns[key].type == 'date'){
 				_this.makeDate({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
+					title: _this.instances[params.id].columns[key].title,
 					$fieldCol: $col
 				});
 			//Если textarea
-			}else if(_this.instances[params.id].columns[key] == 'textarea'){
+			}else if(_this.instances[params.id].columns[key].type == 'textarea'){
 				_this.makeTextarea({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 			//Если richtext
-			}else if(_this.instances[params.id].columns[key] == 'richtext'){
+			}else if(_this.instances[params.id].columns[key].type == 'richtext'){
 				_this.makeRichtext({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 			//По дефолту делаем текстовое поле
 			}else{
 				_this.makeText({
 					value: params.value[key],
-					title: _this.instances[params.id].columnsTitles[key],
-					width: _this.instances[params.id].columnsWidth[key],
+					title: _this.instances[params.id].columns[key].title,
+					width: _this.instances[params.id].columns[key].width,
 					$fieldCol: $col
 				});
 			}
@@ -672,17 +683,17 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeSelect
-	 * @version 2.0 (2016-11-16)
+	 * @version 3.0 (2016-11-17)
 	 * 
 	 * @desc Функция создания списка.
 	 * 
 	 * @param params {object_plain} — The parameters.
 	 * @param params.value {string} — Field value.
 	 * @param params.title {string} — Field title.
-	 * @param params.[data] {string_JSON} — Field data.
-	 * @param params.data[i] {array} — Item.
-	 * @param params.data[i][0] {string} — Item value.
-	 * @param params.[data[i][1]=data[i][0]] {string} — Item title.
+	 * @param [params.data] {sring_JSON_array} — Field data.
+	 * @param params.data[i] {object_plain} — Item.
+	 * @param params.data[i].value {string} — Item value.
+	 * @param [params.data[i].title=data[i].value] {string} — Item title.
 	 * @param params.width {integer} — Field width.
 	 * @param params.$fieldCol {jQuery} — Target container.
 	 * 
@@ -692,11 +703,16 @@ $.ddMM.mm_ddMultipleFields = {
 		var $select = $('<select class="ddField">');
 		
 		if (params.data){
-			var dataMas = $.parseJSON(params.data),
-				options = '';
+			var options = '';
 			
-			$.each(dataMas, function(index){
-				options += '<option value="'+ dataMas[index][0] +'">' + (dataMas[index][1] ? dataMas[index][1] : dataMas[index][0]) +'</option>';
+			params.data = $.parseJSON(params.data);
+			
+			$.each(params.data, function(index, item){
+				if (!item.title){
+					item.title = item.value;
+				}
+				
+				options += '<option value="'+ item.value +'">' + item.title +'</option>';
 			});
 			
 			$select.append(options);
@@ -722,7 +738,7 @@ $.ddMM.mm_ddMultipleFields = {
 
 /**
  * jQuery.fn.mm_ddMultipleFields
- * @version 2.0.2 (2016-11-17)
+ * @version 2.0.3 (2016-11-17)
  * 
  * @desc Делает мультиполя.
  * 
@@ -730,9 +746,6 @@ $.ddMM.mm_ddMultipleFields = {
  * @param [params.rowDelimiter='||'] {string} — Разделитель строк.
  * @param [params.colDelimiter='::'] {string} — Разделитель колонок.
  * @param [params.columns='field'] {string_commaSeparated|array} — Колонки.
- * @param [params.columnsTitles=''] {string_commaSeparated|array} — Заголовки колонок.
- * @param [params.columnsData=''] {separated string|array} — Данные колонок.
- * @param [params.columnsWidth='180'] {string_commaSeparated} — Ширины колонок.
  * @param [params.previewStyle=''] {string} — Стиль превьюшек.
  * @param [params.minRowsNumber=0] {integer} — Минимальное количество строк.
  * @param [params.maxRowsNumber=0] {integer} — Максимальное количество строк.
@@ -745,10 +758,6 @@ $.fn.mm_ddMultipleFields = function(params){
 	//Обрабатываем параметры
 	params = $.extend({}, _this.defaults, params || {});
 	
-	params.columns = $.ddMM.makeArray(params.columns);
-	params.columnsTitles = $.ddMM.makeArray(params.columnsTitles);
-	params.columnsData = $.ddMM.makeArray(params.columnsData, '\\|\\|');
-	params.columnsWidth = $.ddMM.makeArray(params.columnsWidth);
 	params.minRowsNumber = parseInt(params.minRowsNumber, 10);
 	params.maxRowsNumber = parseInt(params.maxRowsNumber, 10);
 	
