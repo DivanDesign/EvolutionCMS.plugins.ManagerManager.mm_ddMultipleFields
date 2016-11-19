@@ -1,7 +1,7 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.6 (2014-10-24)
+ * @version 4.7 (2016-11-19)
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
@@ -33,9 +33,9 @@
  * @event OnDocFormPrerender
  * @event OnDocFormRender
  * 
- * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.6
+ * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.7
  * 
- * @copyright 2012–2014 DivanDesign {@link http://www.DivanDesign.biz }
+ * @copyright 2012–2016 DivanDesign {@link http://www.DivanDesign.biz }
  */
 
 function mm_ddMultipleFields($params){
