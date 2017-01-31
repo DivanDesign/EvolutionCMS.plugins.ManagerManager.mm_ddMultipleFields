@@ -148,19 +148,19 @@ $.ddMM.mm_ddMultipleFields = {
 		if (_inst.options.hideCommonControl) $ddMultipleFieldControl.hide();
 		if (!(_inst.maxRow == 1 && _inst.minRow == 1)) {
 		//Кнопка очистки
-			$('<input type="button" value="×" title="Очистить" class="ddDeleteButton" />').appendTo($ddMultipleFieldControl).on("click", function (e) {
+			$('<input type="button" value="×" title="' + $.ddMM.lang.clean + '" class="ddDeleteButton" />').appendTo($ddMultipleFieldControl).on("click", function (e) {
 				e.preventDefault();
 				if(confirm($.ddMM.lang.confirm_delete_record))$(".ddDeleteButton"+(_inst.minRow?":gt("+(_inst.minRow-1)+")":""), $ddMultipleField).click();
 			});
 		}
 		//Кнопка Reset
-		$('<input type="button" value="&#9100;" title="Reset"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
+		$('<input type="button" value="&#9100;" title="' + $.ddMM.lang.reset + '"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
 			e.preventDefault();
 			_this._reset(id);
 		});
 		// Кнопка "Показать/скрыть исходное значение". Простая возможность скопировать и вставить значение всего поля.
 		if (_inst.options.btnToggleRaw) {
-			$('<input type="button" value="Raw" title="Показать/Скрыть оригинальное поле. Доступны стандартные копирование и вставка. После вставки, нажмите кнопку сброса. Внимание! Неправильный формат исходного поля может привести к непредсказуемым последствиям!"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
+			$('<input type="button" value="Raw" title="' + $.ddMM.lang.raw_btn_tip + '"/>').appendTo($ddMultipleFieldControl).on("click", function (e) {
 				e.preventDefault();
 				$('#' + id).toggle();
 			});
@@ -340,7 +340,7 @@ $.ddMM.mm_ddMultipleFields = {
 				_this.makeImage(id, $col);
 				
 				//Create Attach browse button
-				$('<input class="ddAttachButton" type="button" value="Вставить" />').insertAfter($field).on('click', function(){
+				$('<input class="ddAttachButton" type="button" value="' + $.ddMM.lang.insert + '" />').insertAfter($field).on('click', function(){
 					_inst.currentField = $(this).siblings('.ddField');
 					BrowseServer(id);
 				});
@@ -350,7 +350,7 @@ $.ddMM.mm_ddMultipleFields = {
 				$field = _this.makeText(val[key], _cTitle, _inst.colWidth[key], $col);
 				
 				//Create Attach browse button
-				$('<input class="ddAttachButton" type="button" value="Вставить" />').insertAfter($field).on('click', function(){
+				$('<input class="ddAttachButton" type="button" value="' + $.ddMM.lang.insert + '" />').insertAfter($field).on('click', function(){
 					_inst.currentField = $(this).siblings('.ddField');
 					BrowseFileServer(id);
 				});	
@@ -488,7 +488,7 @@ $.ddMM.mm_ddMultipleFields = {
 			"class": "ddCloneButton",
 			"type": "button",
 			"value": "©",
-			"title": "Copy row",
+			"title": $.ddMM.lang.clone_row,
 			"disabled": (_inst.maxRow && fieldBlocksLen + 1 == _inst.maxRow) ? "disabled" : false
 		}).on('click', function () {
 			if ($(this).attr("disabled")) return false;

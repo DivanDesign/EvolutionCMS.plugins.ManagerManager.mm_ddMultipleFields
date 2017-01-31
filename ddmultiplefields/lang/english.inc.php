@@ -13,6 +13,8 @@
 
 $_lang = array_merge(@$_lang,array(
 	"batch_filling" => "Batch Filling",
+	"clone_row" => "Clone row",
+	"raw_btn_tip"=>"Show/hide original field. Available copying and pasting. After insertion, press the reset button. Attention! Wrong original field format can result in unpredictable consequences!"
 	
 ));
 ?>
