@@ -1,7 +1,7 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.6 (2014-10-24)
+ * @version 4.6-SD (2017-01-31)
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
@@ -42,16 +42,21 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 	$output = '';
 	
 	$site = $modx->config['site_url'];
-	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
+	$widgetPath = 'assets/plugins/managermanager/widgets/ddmultiplefields/';
+	$widgetDir = $site.$widgetPath;
 	
 	if ($e->name == 'OnDocFormPrerender'){
 		global $_lang;
-		
+		ddTools::extendLanguage($widgetPath);
+		$usedLangKeys = array("edit","confirm_delete_record","batch_filling");
+		$usedLangKeys = array_combine($usedLangKeys, $usedLangKeys);
+		$usedLang = array_intersect_key($_lang,$usedLangKeys);
+
 		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
 		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.1.1');
 		
-		$output .= includeJsCss('$j.ddMM.lang.edit = "'.$_lang['edit'].'";$j.ddMM.lang.confirm_delete_record = "'.$_lang["confirm_delete_record"].'";', 'html', 'mm_ddMultipleFields_plain', '1', true, 'js');
+		$output .= includeJsCss('$j.ddMM.lang = '.json_encode($usedLang).';', 'html', 'mm_ddMultipleFields_plain', '1', true, 'js');
 
 		$e->output($output);
 	}else if ($e->name == 'OnDocFormRender'){

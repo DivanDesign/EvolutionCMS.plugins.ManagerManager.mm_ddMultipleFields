@@ -253,7 +253,7 @@ $.ddMM.mm_ddMultipleFields = {
 		  var h = screen.height * 0.5;
 		  OpenServerBrowser('media/browser/mcpuk/browse.php?opener=ddMultipleField&type='+type, w, h);
 		 };
-			$("<input type='button' title='' value='Пакетное заполнение' />").appendTo($ddMultipleFieldControl).click(function(e){
+			$("<input type='button' title='' value='"+$.ddMM.lang.batch_filling+"' />").appendTo($ddMultipleFieldControl).click(function(e){
 				e.preventDefault();
 				window.KCFinder = {
 					callBackMultiple: function (files) {
