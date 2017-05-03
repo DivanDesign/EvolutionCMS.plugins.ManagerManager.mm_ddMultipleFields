@@ -17,7 +17,7 @@
 	font: 12px/1.2em Verdana,Helvetica,sans-serif !important;
 }
 
-.ddMultipleField input {height: 1.2em;}
+.ddMultipleField input {height: 2em;}
 
 .ddMultipleField input:focus {border-color: #E1A020 !important;}
 
@@ -43,7 +43,11 @@
 	white-space: nowrap;
 }
 
-.ddMultipleField tr th {text-align: left;}
+.ddMultipleField tr th {
+	line-height: 1;
+	text-align: left;
+	vertical-align: bottom;
+}
 
 .ddMultipleField tr td.ddFieldCol, .ddMultipleField tr td.ddSortHandle {
 	border: 2px solid #FFFFFF;
