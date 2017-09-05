@@ -52,7 +52,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		$usedLangKeys = array_combine($usedLangKeys, $usedLangKeys);
 		$usedLang = array_intersect_key($_lang,$usedLangKeys);
 
-		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
+		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui.min.js', 'html', 'jquery-ui', '1.12.1');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
 		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.1.1');
 		
