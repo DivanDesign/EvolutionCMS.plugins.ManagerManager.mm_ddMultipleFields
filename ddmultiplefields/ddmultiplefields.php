@@ -1,7 +1,7 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.6-SD (2017-01-31)
+ * @version 4.6.1-SD (2017-05-15)
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
@@ -35,6 +35,7 @@ function isJson($string) {
  json_decode($string);
  return (json_last_error() == JSON_ERROR_NONE);
 }
+
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = '',$options = array()){
 	if (!useThisRule($roles, $templates)){return;}
 	if (is_array($options)) {
