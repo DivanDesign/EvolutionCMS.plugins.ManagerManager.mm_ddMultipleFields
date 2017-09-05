@@ -31,6 +31,10 @@
  * http://www.DivanDesign.biz
  */
 
+function isJson($string) {
+ json_decode($string);
+ return (json_last_error() == JSON_ERROR_NONE);
+}
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = '',$options = array()){
 	if (!useThisRule($roles, $templates)){return;}
 	if (is_array($options)) {
@@ -67,9 +71,8 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 			$columnsData = array();
 			
 			foreach ($columnsDataTemp as $value){
-				//Евалим знение и записываем результат или исходное значени
-				$eval = @eval($value);
-				$columnsData[] = $eval ? addslashes(json_encode($eval)) : addslashes($value);
+				//Проверяем значение и записываем результат или исходное значени
+				$columnsData[] = addslashes(!isJson($value) ? json_encode($value) : $value);
 			}
 			//Сливаем в строку, что бы передать на клиент
 			$columnsData = implode('||', $columnsData);
