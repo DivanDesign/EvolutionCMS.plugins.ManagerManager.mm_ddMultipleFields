@@ -1,7 +1,7 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.6-SD (2017-01-31)
+ * @version 4.6.1-SD (2017-05-15)
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
@@ -31,6 +31,11 @@
  * http://www.DivanDesign.biz
  */
 
+function isJson($string) {
+ json_decode($string);
+ return (json_last_error() == JSON_ERROR_NONE);
+}
+
 function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns = 'field', $columnsTitle = '', $colWidth = '180', $splY = '||', $splX = '::', $imgW = 300, $imgH = 100, $minRow = 0, $maxRow = 0, $columnsData = '',$options = array()){
 	if (!useThisRule($roles, $templates)){return;}
 	if (is_array($options)) {
@@ -52,7 +57,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 		$usedLangKeys = array_combine($usedLangKeys, $usedLangKeys);
 		$usedLang = array_intersect_key($_lang,$usedLangKeys);
 
-		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
+		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui.min.js', 'html', 'jquery-ui', '1.12.1');
 		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
 		$output .= includeJsCss($widgetDir.'jquery.ddMM.mm_ddMultipleFields.js', 'html', 'jquery.ddMM.mm_ddMultipleFields', '1.1.1');
 		
@@ -67,9 +72,8 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 			$columnsData = array();
 			
 			foreach ($columnsDataTemp as $value){
-				//Евалим знение и записываем результат или исходное значени
-				$eval = @eval($value);
-				$columnsData[] = $eval ? addslashes(json_encode($eval)) : addslashes($value);
+				//Проверяем значение и записываем результат или исходное значени
+				$columnsData[] = addslashes(!isJson($value) ? json_encode($value) : $value);
 			}
 			//Сливаем в строку, что бы передать на клиент
 			$columnsData = implode('||', $columnsData);
