@@ -53,7 +53,7 @@ function mm_ddMultipleFields($tvs = '', $roles = '', $templates = '', $columns =
 	if ($e->name == 'OnDocFormPrerender'){
 		global $_lang;
 		ddTools::extendLanguage($widgetPath);
-		$usedLangKeys = array("insert","edit","clean","confirm_delete_record","batch_filling","clone_row","raw_btn_tip");
+		$usedLangKeys = array("insert","edit","clean","confirm_delete_record","batch_filling","clone_row","raw_btn_tip","reset");
 		$usedLangKeys = array_combine($usedLangKeys, $usedLangKeys);
 		$usedLang = array_intersect_key($_lang,$usedLangKeys);
 
