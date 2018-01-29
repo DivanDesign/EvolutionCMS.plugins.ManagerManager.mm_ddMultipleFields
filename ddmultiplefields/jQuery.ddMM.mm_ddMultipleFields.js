@@ -673,7 +673,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeSelect
-	 * @version 3.0 (2016-11-17)
+	 * @version 3.1 (2018-01-29)
 	 * 
 	 * @desc Функция создания списка.
 	 * 
@@ -710,6 +710,7 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		if (params.value){$select.val(params.value);}
 		
+		$select.css('width', params.width ? params.width : 180 );
 		return $select.appendTo(params.$fieldCol);
 	},
 	
