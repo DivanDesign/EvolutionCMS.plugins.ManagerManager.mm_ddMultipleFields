@@ -123,10 +123,6 @@ function mm_ddMultipleFields($params){
 				$params->columnsData = [];
 				
 				foreach ($columnsDataTemp as $dataItem){
-					//Евалим знение и записываем результат или исходное значени
-					$eval = @eval($dataItem);
-					$dataItem = $eval ? json_encode($eval) : $dataItem;
-					
 					//For backward compatibility '[{"Value 1", "Title 1"}, {"Value 2"}]' → '[{"value" => "Value 1", "title" => "Title 1"}, {"value" => "Value 2"}]'
 					if ($dataItem != ''){
 						$dataItemTemp = json_decode($dataItem, true);
