@@ -1,12 +1,12 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.3 (2017-05-12)
+ * @version 2.1.4 (2018-03-29)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
  * @uses jQuery.ddMM 1.1.2
  * 
- * @copyright 2013–2014 [DivanDesign]{@link http://www.DivanDesign.biz }
+ * @copyright 2013–2018 [DivanDesign]{@link http://www.DivanDesign.biz }
  */
 
 (function($){
