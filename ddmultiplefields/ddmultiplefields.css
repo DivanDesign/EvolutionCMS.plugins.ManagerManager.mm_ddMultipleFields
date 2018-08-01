@@ -17,8 +17,6 @@
 	font: 12px/1.2em Verdana,Helvetica,sans-serif !important;
 }
 
-.ddMultipleField input {height: 1.2em;}
-
 .ddMultipleField input:focus {border-color: #E1A020 !important;}
 
 .ddMultipleField input.DatePicker {
