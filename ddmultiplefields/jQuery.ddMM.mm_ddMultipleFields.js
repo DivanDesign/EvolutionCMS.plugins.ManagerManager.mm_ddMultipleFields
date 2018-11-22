@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.4 (2018-03-29)
+ * @version 2.1.5 (2018-11-22)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -276,7 +276,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeFieldRow
-	 * @version 2.1.1 (2018-11-22)
+	 * @version 2.1.2 (2018-11-22)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
@@ -310,7 +310,7 @@ $.ddMM.mm_ddMultipleFields = {
 			return;
 		}
 		
-		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div></div></td></tr>');
+		var $fieldBlock = $('<tr class="ddFieldBlock ' + params.id + 'ddFieldBlock"><td class="ddSortHandle"><div class="fa fa-sort"></div></td></tr>');
 		
 		if (params.$insertAfter){
 			$fieldBlock.insertAfter(params.$insertAfter);
@@ -480,7 +480,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeDeleteButton
-	 * @version 2.0.3 (2018-11-22)
+	 * @version 2.1 (2018-11-22)
 	 * 
 	 * @desc Makes delete button.
 	 * 
@@ -493,9 +493,9 @@ $.ddMM.mm_ddMultipleFields = {
 	makeDeleteButton: function(params){
 		var _this = this;
 		
-		$('<input class="ddDeleteButton" type="button" value="×" />').appendTo(params.$fieldCol).on(
+		$('<button class="fa fa-trash btn ddDeleteButton"></button>').appendTo(params.$fieldCol).on(
 			'click',
-			function(){
+			function(event){
 				//Проверяем на минимальное количество строк
 				if (
 					_this.instances[params.id].minRowsNumber &&
@@ -527,13 +527,15 @@ $.ddMM.mm_ddMultipleFields = {
 						}
 					);
 				}
+				
+				event.preventDefault();
 			}
 		);
 	},
 	
 	/**
 	 * @method makeAddButton
-	 * @version 3.0.1 (2018-11-22)
+	 * @version 3.1 (2018-11-22)
 	 * 
 	 * @desc Функция создания кнопки +, вызывается при инициализации.
 	 * 
@@ -546,9 +548,9 @@ $.ddMM.mm_ddMultipleFields = {
 	makeAddButton: function(params){
 		var _this = this,
 			//Вешаем на кнопку создание новой строки
-			$button = $('<input class="ddAddButton" type="button" value="+" />').appendTo(params.$fieldCol).on(
+			$button = $('<button class="fa fa-plus btn ddAddButton"></button>').appendTo(params.$fieldCol).on(
 				'click',
-				function(){
+				function(event){
 					_this.makeFieldRow({
 						id: params.id,
 						$insertAfter: $(this).parents('.ddFieldBlock:first')
@@ -558,6 +560,8 @@ $.ddMM.mm_ddMultipleFields = {
 						{opacity: 1},
 						300
 					);
+					
+					event.preventDefault();
 				}
 			);
 		

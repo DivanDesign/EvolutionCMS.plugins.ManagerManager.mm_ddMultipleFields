@@ -11,14 +11,10 @@
 }
 
 .ddMultipleField input,
-.ddMultipleField textarea {
-	padding: 0.2em 0.533em 0.333em !important;
-	border: 1px solid #C8C8C8 !important;
+.ddMultipleField textarea,
+.ddMultipleField button {
 	margin-right: 5px;
-	font: 12px/1.2em Verdana,Helvetica,sans-serif !important;
 }
-
-.ddMultipleField input:focus {border-color: #E1A020 !important;}
 
 .ddMultipleField input.DatePicker {
 	width: 147px !important;
@@ -54,7 +50,7 @@
 	-ms-transition: background 0.3s ease-out;
 	-o-transition: background 0.3s ease-out;
 	transition: background 0.3s ease-out;
-	background: #D9F1FF;
+	background: rgb(235, 235, 235);
 }
 
 .ddMultipleField tr td.ddFieldCol:last-child {
@@ -62,7 +58,7 @@
 	background: none !important;
 }
 
-.ddMultipleField tr td.ddFieldCol:last-child input {
+.ddMultipleField tr td.ddFieldCol:last-child button {
 	width: 1.8em !important;
 	height: 1.8em !important;
 	padding: 0 !important;
@@ -73,17 +69,17 @@
 
 .ddMultipleField tr td.ddSortHandle {
 	border-right: none;
-	width: 16px;
+	width: 20px;
 	padding: 0;
 	vertical-align: middle;
+	background: transparent;
 }
 
 .ddMultipleField tr td.ddFieldCol:nth-child(2) {border-left: none;}
 
 .ddMultipleField tr td.ddSortHandle div {
-	background: #007CC3;
-	width: 10px;
-	height: 23px;
+	width: 20px;
+	padding: 10px 0;
 	-webkit-transition: opacity 0.3s ease-out;
 	-moz-transition: opacity 0.3s ease-out;
 	-ms-transition: opacity 0.3s ease-out;
@@ -91,6 +87,9 @@
 	transition: opacity 0.3s ease-out;
 	opacity: .3;
 	cursor: n-resize;
+	text-align: center;
+	font-size: 20px;
+	color: rgb(0, 111, 167);
 }
 
 .ddMultipleField tr.ddFieldBlock:hover td.ddFieldCol,
