@@ -1,7 +1,7 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.7.2 (2018-03-29)
+ * @version 4.7.3 (2018-11-22)
  * 
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
@@ -20,7 +20,7 @@
  * @param $params['columns'][i]['data'][i] {array_associative} — Item. @required
  * @param $params['columns'][i]['data'][i]['value'] {integer} — Value. @required
  * @param $params['columns'][i]['data'][i]['title'] {integer} — Value. Default: $params['columns'][i]['data'][i]['value'].
- * e. g. '[{"value": "Some value", "title": "Optional title"}, {"value": "Some value 2"}]' 
+ * @example 'data' => '[{"value": "Some value", "title": "Optional title"}, {"value": "Some value 2"}]' 
  * @param $params['minRowsNumber'] {integer} — Minimum number of strings. Default: 0.
  * @param $params['maxRowsNumber'] {integer} — Maximum number of strings. Default: 0 (без лимита).
  * @param $params['rowDelimiter'] {string} — Strings separator. Default: '||'.
@@ -33,7 +33,7 @@
  * @event OnDocFormPrerender
  * @event OnDocFormRender
  * 
- * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.7.2
+ * @link http://code.divandesign.biz/modx/mm_ddmultiplefields
  * 
  * @copyright 2012–2018 DivanDesign {@link http://www.DivanDesign.biz }
  */
