@@ -100,7 +100,7 @@ function mm_ddMultipleFields($params){
 	
 	$output = '';
 	
-	$site = $modx->config['site_url'];
+	$site = $modx->getConfig('site_url');
 	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
 	
 	if ($e->name == 'OnDocFormPrerender'){
