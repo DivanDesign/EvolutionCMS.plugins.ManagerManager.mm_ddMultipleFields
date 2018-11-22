@@ -7,7 +7,12 @@ $richtextIncludeDirectory = '../../../../../../';
 
 //Define MGR_DIR
 if (file_exists($richtextIncludeDirectory.'assets/cache/siteManager.php')){include_once($richtextIncludeDirectory.'assets/cache/siteManager.php');}
-if (!defined('MGR_DIR')){define('MGR_DIR', 'manager');}
+if (!defined('MGR_DIR')){
+	define(
+		'MGR_DIR',
+		'manager'
+	);
+}
 
 $richtextIncludeDirectory .= MGR_DIR.'/';
 
@@ -18,9 +23,15 @@ require_once($richtextIncludeDirectory.'includes/config.inc.php');
 startCMSSession();
 
 if ($_SESSION['mgrValidated']){
-	define('IN_MANAGER_MODE', true);
+	define(
+		'IN_MANAGER_MODE',
+		true
+	);
 	//Setup the MODx API
-	define('MODX_API_MODE', true);
+	define(
+		'MODX_API_MODE',
+		true
+	);
 	//Initiate a new document parser
 	require_once($richtextIncludeDirectory.'includes/document.parser.class.inc.php');
 	$modx = new DocumentParser;
@@ -36,10 +47,13 @@ if ($_SESSION['mgrValidated']){
 	//Include the ddTools library
 	require_once($modx->config['base_path'].$mmDir.'modx.ddtools.class.php');
 	
-	$temp = $modx->invokeEvent('OnRichTextEditorInit', [
-		'editor' => $modx->config['which_editor'],
-		'elements' => ['ddMultipleFields_richtext']
-	]);
+	$temp = $modx->invokeEvent(
+		'OnRichTextEditorInit',
+		[
+			'editor' => $modx->config['which_editor'],
+			'elements' => ['ddMultipleFields_richtext']
+		]
+	);
 	
 	echo ddTools::parseText([
 		'text' => file_get_contents($modx->config['base_path'].$windowDir.'template.html'),

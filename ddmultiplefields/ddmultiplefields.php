@@ -6,7 +6,7 @@
  * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
  * 
  * @uses PHP >= 5.4.
- * @uses MODXEvo.plugin.ManagerManager >= 0.7.
+ * @uses MODXEvo.plugins.ManagerManager >= 0.7.
  * 
  * @param $params {array_associative|stdClass} — The object of params. @required
  * @param $params['fields'] {string_commaSeparated} — Names of TV for which the widget is applying. @required
@@ -33,7 +33,7 @@
  * @event OnDocFormPrerender
  * @event OnDocFormRender
  * 
- * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.7.1
+ * @link http://code.divandesign.biz/modx/mm_ddmultiplefields/4.7.2
  * 
  * @copyright 2012–2018 DivanDesign {@link http://www.DivanDesign.biz }
  */
@@ -66,28 +66,34 @@ function mm_ddMultipleFields($params){
 	}
 	
 	//Defaults
-	$params = (object) array_merge([
-		'fields' => '',
-		'columns' => [
-			[
-				'type' => 'text'
-			]
+	$params = (object) array_merge(
+		[
+			'fields' => '',
+			'columns' => [
+				[
+					'type' => 'text'
+				]
+			],
+			'minRowsNumber' => 0,
+			'maxRowsNumber' => 0,
+			'rowDelimiter' => '||',
+			'colDelimiter' => '::',
+			'previewWidth' => 300,
+			'previewHeight' => 100,
+			'roles' => '',
+			'templates' => '',
+			//Deprecated
+			'columnsTitles' => '',
+			'columnsWidth' => '180',
+			'columnsData' => ''
 		],
-		'minRowsNumber' => 0,
-		'maxRowsNumber' => 0,
-		'rowDelimiter' => '||',
-		'colDelimiter' => '::',
-		'previewWidth' => 300,
-		'previewHeight' => 100,
-		'roles' => '',
-		'templates' => '',
-		//Deprecated
-		'columnsTitles' => '',
-		'columnsWidth' => '180',
-		'columnsData' => ''
-	], (array) $params);
+		(array) $params
+	);
 	
-	if (!useThisRule($params->roles, $params->templates)){return;}
+	if (!useThisRule(
+		$params->roles,
+		$params->templates
+	)){return;}
 	
 	global $modx;
 	$e = &$modx->Event;
@@ -98,15 +104,33 @@ function mm_ddMultipleFields($params){
 	$widgetDir = $site.'assets/plugins/managermanager/widgets/ddmultiplefields/';
 	
 	if ($e->name == 'OnDocFormPrerender'){
-		$output .= includeJsCss($site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js', 'html', 'jquery-ui', '1.10.3');
-		$output .= includeJsCss($widgetDir.'ddmultiplefields.css', 'html');
-		$output .= includeJsCss($widgetDir.'jQuery.ddMM.mm_ddMultipleFields.js', 'html', 'jQuery.ddMM.mm_ddMultipleFields', '2.1.2');
+		$output .= includeJsCss(
+			$site.'assets/plugins/managermanager/js/jquery-ui-1.10.3.min.js',
+			'html',
+			'jquery-ui',
+			'1.10.3'
+		);
+		$output .= includeJsCss(
+			$widgetDir.'ddmultiplefields.css',
+			'html'
+		);
+		$output .= includeJsCss(
+			$widgetDir.'jQuery.ddMM.mm_ddMultipleFields.js',
+			'html',
+			'jQuery.ddMM.mm_ddMultipleFields',
+			'2.1.2'
+		);
 		
 		$e->output($output);
 	}else if ($e->name == 'OnDocFormRender'){
 		global $mm_current_page;
 		
-		$params->fields = tplUseTvs($mm_current_page['template'], $params->fields, 'image,file,text,email,textarea', 'type,name');
+		$params->fields = tplUseTvs(
+			$mm_current_page['template'],
+			$params->fields,
+			'image,file,text,email,textarea',
+			'type,name'
+		);
 		if ($params->fields == false){return;}
 		
 		//Колонки, заданные как «field», теперь их нужно будет заменить на «image» и «file» соответственно
@@ -119,19 +143,29 @@ function mm_ddMultipleFields($params){
 			$params->columnsWidth = makeArray($params->columnsWidth);
 			//Prepare data
 			if ($params->columnsData){
-				$columnsDataTemp = explode('||', $params->columnsData);
+				$columnsDataTemp = explode(
+					'||',
+					$params->columnsData
+				);
 				$params->columnsData = [];
 				
 				foreach ($columnsDataTemp as $dataItem){
-					//For backward compatibility '[{"Value 1", "Title 1"}, {"Value 2"}]' → '[{"value" => "Value 1", "title" => "Title 1"}, {"value" => "Value 2"}]'
+					//For backward compatibility '[["Value 1", "Title 1"], ["Value 2"]]' → '[{"value" => "Value 1", "title" => "Title 1"}, {"value" => "Value 2"}]'
 					if ($dataItem != ''){
-						$dataItemTemp = json_decode($dataItem, true);
+						$dataItemTemp = json_decode(
+							$dataItem,
+							true
+						);
 						$dataItem = [];
 						
 						//Build list
-						foreach ($dataItemTemp as $dataItem_item_index => $dataItem_item_value){
+						foreach (
+							$dataItemTemp as
+							$dataItem_item_index => $dataItem_item_value
+						){
 							$dataItem[$dataItem_item_index] = [];
 							$dataItem[$dataItem_item_index]['value'] = $dataItem_item_value[0];
+							
 							//Title
 							if (isset($dataItem_item_value[1])){
 								$dataItem[$dataItem_item_index]['title'] = $dataItem_item_value[1];
@@ -149,7 +183,10 @@ function mm_ddMultipleFields($params){
 			
 			$params->columns = [];
 			
-			foreach ($columnsTemp as $index => $value){
+			foreach (
+				$columnsTemp as
+				$index => $value
+			){
 				//“field” value compatibility
 				if ($value == 'field'){
 					$columns_fieldKeyIndex[] = $index;
@@ -210,7 +247,12 @@ $j.ddMM.fields.'.$field['name'].'.$elem.mm_ddMultipleFields({
 		
 		//Поругаемся
 		if (!empty($columns_fieldKeyIndex)){
-			$modx->logEvent(1, 2, '<p>You are currently using the deprecated column type “field”. Please, replace it with “image” or “file” respectively.</p><p>The plugin has been called in the document with template id '.$mm_current_page['template'].'.</p>', 'ManagerManager: mm_ddMultipleFields');
+			$modx->logEvent(
+				1,
+				2,
+				'<p>You are currently using the deprecated column type “field”. Please, replace it with “image” or “file” respectively.</p><p>The plugin has been called in the document with template id '.$mm_current_page['template'].'.</p>',
+				'ManagerManager: mm_ddMultipleFields'
+			);
 		}
 		
 		$output .= '//---------- mm_ddMultipleFields :: End -----'.PHP_EOL;

@@ -1,4 +1,4 @@
-# mm_ddMultipleFields
+# MODXEvo.plugins.ManagerManager.mm_ddMultipleFields
 
 Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
 ___
