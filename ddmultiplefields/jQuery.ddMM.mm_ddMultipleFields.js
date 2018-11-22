@@ -591,7 +591,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method makeRichtext
-	 * @version 2.0 (2016-11-16)
+	 * @version 2.0.1 (2018-11-22)
 	 * 
 	 * @desc Make richtext field.
 	 * 
@@ -609,10 +609,10 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		$('<div class="ddFieldCol_edit"><a class="false" href="#">' + $.ddMM.lang.edit + '</a></div>').appendTo(params.$fieldCol).find('a').on('click', function(event){
 			_this.richtextWindow = window.open($.ddMM.config.site_url + $.ddMM.urls.mm + 'widgets/ddmultiplefields/richtext/index.php', 'mm_ddMultipleFields_richtext', new Array(
-				'width=600',
-				'height=550',
-				'left=' + (($.ddTools.windowWidth - 600) / 2),
-				'top=' + (($.ddTools.windowHeight - 550) / 2),
+				'width=700',
+				'height=600',
+				'left=' + (($.ddTools.windowWidth - 700) / 2),
+				'top=' + (($.ddTools.windowHeight - 600) / 2),
 				'menubar=no',
 				'toolbar=no',
 				'location=no',
