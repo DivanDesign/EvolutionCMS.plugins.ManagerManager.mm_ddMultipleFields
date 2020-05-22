@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.6 (2020-05-22)
+ * @version 2.1.7 (2020-05-22)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -81,7 +81,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 2.0.3 (2020-05-22)
+	 * @version 2.0.4 (2020-05-22)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -221,11 +221,25 @@ $.ddMM.mm_ddMultipleFields = {
 			.instances[params.id]
 			.$originalField
 			.val(
-				masRows.join(
-					_this
-						.instances[params.id]
-						.rowDelimiter
-				)
+				masRows
+					.join(
+						_this
+							.instances[params.id]
+							.rowDelimiter
+					)
+					//Decode some HTML entities
+					.replace(
+						'&lt;',
+						'<'
+					)
+					.replace(
+						'&gt;',
+						'>'
+					)
+					.replace(
+						'&amp;',
+						'&'
+					)
 			)
 		;
 	},

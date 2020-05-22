@@ -133,7 +133,7 @@ function mm_ddMultipleFields($params){
 			),
 			'html',
 			'jQuery.ddMM.mm_ddMultipleFields',
-			'2.1.2'
+			'2.1.7'
 		);
 		
 		$e->output($output);

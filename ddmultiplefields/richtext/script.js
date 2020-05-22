@@ -2,7 +2,24 @@ $(function(){
 	var $textarea = $('#ddMultipleFields_richtext');
 	
 	$textarea
-		.val(window.$ddField.html())
+		.val(
+			window
+				.$ddField
+				.html()
+				//Decode some HTML entities
+				.replace(
+					'&lt;',
+					'<'
+				)
+				.replace(
+					'&gt;',
+					'>'
+				)
+				.replace(
+					'&amp;',
+					'&'
+				)
+		)
 		.trigger('change')
 	;
 	
