@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5.3 (2020-05-25)
+ * @version 2.5.4 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -352,7 +352,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 1.0.1 (2020-05-25)
+	 * @version 1.0.2 (2020-05-25)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
@@ -369,8 +369,11 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @returns {objectPlain}
 	 */
 	init_prepareFieldValueObject: function(params){
-		//Объект значения поля
-		var fieldValueObject = {};
+		var
+			_this = this,
+			//Объект значения поля
+			fieldValueObject = {}
+		;
 		
 		//If value is JSON object
 		if (
@@ -398,7 +401,7 @@ $.ddMM.mm_ddMultipleFields = {
 						//Split by column
 						columnValuesArray = this.split(params.colDelimiter),
 						//Generate row ID
-						rowId = (new Date).getTime()
+						rowId = _this.generateRowId()
 					;
 					
 					//If deprecated ID column exists
@@ -469,31 +472,44 @@ $.ddMM.mm_ddMultipleFields = {
 	},
 	
 	/**
+	 * @method generateRowId
+	 * @version 1.0 (2020-05-25)
+	 * 
+	 * @desc Generates an uniquie ID for table row.
+	 * 
+	 * @returns {integer}
+	 */
+	generateRowId: function(){
+		return Date.now();
+	},
+	
+	/**
 	 * @method createRow
-	 * @version 6.0 (2020-05-25)
+	 * @version 6.0.1 (2020-05-25)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
 	 * @param params {objectPlain} — The parameters.
 	 * @param params.instanceId {string} — TV id.
-	 * @param [params.rowId=(new Date).getTime()] {integer} — Row ID.
+	 * @param [params.rowId=this.generateRowId()] {integer} — Row ID.
 	 * @param [params.rowValue={}] {objectPlain} — Row value.
 	 * @param [params.$insertAfter=''] {string} — Row value.
 	 * 
 	 * @returns {jQuery}
 	 */
 	createRow: function(params){
+		var	_this = this;
+		
 		//Defaults
 		params = $.extend(
 			{
-				rowId: (new Date).getTime(),
+				rowId: _this.generateRowId(),
 				rowValue: {}
 			},
 			params
 		);
 		
 		var
-			_this = this,
 			//Общее количество строк на данный момент
 			fieldRowsTotal =
 				_this
