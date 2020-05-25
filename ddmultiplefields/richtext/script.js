@@ -4,7 +4,7 @@ $(function(){
 	$textarea
 		.val(
 			window
-				.$ddField
+				.$ddMultipleField_row_col_field
 				.html()
 				//Decode some HTML entities
 				.replace(
@@ -30,7 +30,7 @@ $(function(){
 				tinyMCE.triggerSave();
 			}
 			
-			window.$ddField.html($textarea.val());
+			window.$ddMultipleField_row_col_field.html($textarea.val());
 			$textarea.val('');
 			window.close();
 		}
