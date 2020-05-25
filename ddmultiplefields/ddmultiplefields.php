@@ -3,36 +3,6 @@
  * mm_ddMultipleFields
  * @version 4.7.4 (2019-06-23)
  * 
- * @desc Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values is written as one with using separator symbols). For example: a few images.
- * 
- * @uses PHP >= 5.4.
- * @uses MODXEvo.plugins.ManagerManager >= 0.7.
- * 
- * @param $params {array_associative|stdClass} — The object of params. @required
- * @param $params['fields'] {string_commaSeparated} — Names of TV for which the widget is applying. @required
- * @param $params['columns'] {array} — Columns. Default: [ ['type' => 'text'] ].
- * @param $params['columns'][i] {array_associative} — Column. @required
- * @param $params['columns'][i]['type'] {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Column type: “text” — text type column; “textarea” — multiple lines column; “richtext” — column with rich text editor; “date” — date column; “id” — hidden column containing unique id; “select” — list with options (see “$params['columns'][i]['data']”). @required
- * @param $params['columns'][i]['title'] {string} — Column title. Default: ''.
- * @param $params['columns'][i]['width'] {integer} — Column width. Default: 180.
- * @param $params['columns'][i]['data'] {string_JSON_array} — Valid values (JSON array for the “select” type). Default: —.
- * if $params['columns'][i]['type'] == select
- * @param $params['columns'][i]['data'][i] {array_associative} — Item. @required
- * @param $params['columns'][i]['data'][i]['value'] {integer} — Value. @required
- * @param $params['columns'][i]['data'][i]['title'] {integer} — Value. Default: $params['columns'][i]['data'][i]['value'].
- * @example 'data' => '[{"value": "Some value", "title": "Optional title"}, {"value": "Some value 2"}]' 
- * @param $params['minRowsNumber'] {integer} — Minimum number of strings. Default: 0.
- * @param $params['maxRowsNumber'] {integer} — Maximum number of strings. Default: 0 (без лимита).
- * @param $params['rowDelimiter'] {string} — Strings separator. Default: '||'.
- * @param $params['colDelimiter'] {string} — Columns separator. Default: '::'.
- * @param $params['previewWidth'] {integer} — Maximum value of image preview width. Default: 300.
- * @param $params['previewHeight'] {integer} — Maximum value of image preview height. Default: 100.
- * @param $params['roles'] {string_commaSeparated} — The roles that the widget is applied to (when this parameter is empty then widget is applied to the all roles). Default: ''.
- * @param $params['templates'] {string_commaSeparated} — Templates IDs for which the widget is applying (empty value means the widget is applying to all templates). Default: ''.
- * 
- * @event OnDocFormPrerender
- * @event OnDocFormRender
- * 
  * @link https://code.divandesign.biz/modx/mm_ddmultiplefields
  * 
  * @copyright 2012–2018 DD Group {@link http://DivanDesign.biz }
@@ -133,7 +103,7 @@ function mm_ddMultipleFields($params){
 			),
 			'html',
 			'jQuery.ddMM.mm_ddMultipleFields',
-			'2.1.9'
+			'2.2'
 		);
 		
 		$e->output($output);
@@ -274,15 +244,16 @@ function mm_ddMultipleFields($params){
 			$output .=
 '
 $j.ddMM.fields.' . $field['name'] . '.$elem.mm_ddMultipleFields({
-	rowDelimiter: "' . $params->rowDelimiter . '",
-	colDelimiter: "' . $params->colDelimiter . '",
 	columns: ' . json_encode(
 		$params->columns,
 		JSON_UNESCAPED_UNICODE
 	) . ',
 	previewStyle: "' . $previewStyle . '",
 	minRowsNumber: "' . $params->minRowsNumber . '",
-	maxRowsNumber: "' . $params->maxRowsNumber . '"
+	maxRowsNumber: "' . $params->maxRowsNumber . '",
+	
+	rowDelimiter: "' . $params->rowDelimiter . '",
+	colDelimiter: "' . $params->colDelimiter . '"
 });
 ';
 		}

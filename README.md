@@ -1,6 +1,6 @@
 # (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields
 
-Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values are written as one with using separator symbols). For example: a few images.
+Widget for plugin ManagerManager that allows you to add any number of fields values (TV) in one document (values are written in field as a JSON object). For example: a few images.
 
 Capabilities:
 * Save several images, text fields, selects, etc to a document field.

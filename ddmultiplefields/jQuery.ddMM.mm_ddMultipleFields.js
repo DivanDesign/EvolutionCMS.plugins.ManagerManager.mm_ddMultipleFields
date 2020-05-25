@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.9 (2020-05-25)
+ * @version 2.2 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -12,10 +12,6 @@
 (function($){
 $.ddMM.mm_ddMultipleFields = {
 	defaults: {
-		//Разделитель строк
-		rowDelimiter: '||',
-		//Разделитель колонок
-		colDelimiter: '::',
 		//Колонки
 		columns: [
 			{
@@ -27,14 +23,18 @@ $.ddMM.mm_ddMultipleFields = {
 		//Минимальное количество строк
 		minRowsNumber: 0,
 		//Максимальное количество строк
-		maxRowsNumber: 0
+		maxRowsNumber: 0,
+		
+		//Backward compatibility
+		//Разделитель строк
+		rowDelimiter: '||',
+		//Разделитель колонок
+		colDelimiter: '::'
 	},
 	/**
 	 * @prop instances {objectPlain} — All instances.
 	 * @prop instances[item] {objectPlain} — Item, when key — TV id.
 	 * @prop instances[item].id {string} — Unique TV id (similar to key).
-	 * @prop instances[item].rowDelimiter {string} — Разделитель строк.
-	 * @prop instances[item].colDelimiter {string} — Разделитель колонок.
 	 * @prop instances[item].columns {array} — Колонки. Default: 'field'.
 	 * @prop instances[item].columns[i] {objectPlain} — Колонка.
 	 * @prop instances[item].columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
@@ -49,6 +49,10 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @prop instances[item].$table {jQuery} — Multiple field table.
 	 * @prop instances[item].$addButtons {jQuery} — New row adding buttons.
 	 * @prop instances[item].$currentField {jQuery} — Current field from table.
+	 * 
+	 * Backward compatibility
+	 * @prop instances[item].rowDelimiter {string} — Разделитель строк.
+	 * @prop instances[item].colDelimiter {string} — Разделитель колонок.
 	 */
 	instances: {},
 	richtextWindow: null,
@@ -81,7 +85,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 2.0.5 (2020-05-25)
+	 * @version 3.0 (2020-05-25)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -94,7 +98,7 @@ $.ddMM.mm_ddMultipleFields = {
 		var
 			_this = this,
 			//Object that will be saved to the field
-			fieldValueObject = new Array()
+			fieldValueObject = {}
 		;
 		
 		//Перебираем все строки
@@ -102,10 +106,13 @@ $.ddMM.mm_ddMultipleFields = {
 			.instances[params.id]
 			.$table
 			.find('.ddMultipleField_row')
-			.each(function(){
+			.each(function(
+				rowKey,
+				rowElement
+			){
 				var
-					$this = $(this),
-					columnValuesObject = new Array(),
+					$this = $(rowElement),
+					columnValuesObject = {},
 					fieldId = {
 						columnKey: false,
 						value: false,
@@ -156,45 +163,21 @@ $.ddMM.mm_ddMultipleFields = {
 							==
 							'richtext'
 						){
-							//Собираем значения строки в массив
-							columnValuesObject.push(
-								$.trim(
-									$(this).html()
-								)
+							//Сохраняем значение поля в объект
+							columnValuesObject[columnKey] =	$.trim(
+								$(this).html()
 							);
 						}else{
-							//Собираем значения строки в массив
-							columnValuesObject.push(
-								$.trim(
-									$(this).val()
-								)
+							//Сохраняем значение поля в объект
+							columnValuesObject[columnKey] = $.trim(
+								$(this).val()
 							);
 						}
 					})
 				;
 				
-				//Склеиваем значения колонок через разделитель
-				var
-					columnValuesString = columnValuesObject.join(
-						_this
-							.instances[params.id]
-							.colDelimiter
-					)
-				;
-				
 				//Если значение было хоть в одной колонке из всех в этой строке
-				if (
-					columnValuesString.length !=
-					(
-						(
-							columnValuesObject.length - 1
-						) *
-						_this
-							.instances[params.id]
-							.colDelimiter
-							.length
-					)
-				){
+				if (!$.isEmptyObject(columnValuesObject)){
 					//Проверяем было ли поле с id
 					if (fieldId.columnKey !== false){
 						//Записываем значение в поле
@@ -202,17 +185,11 @@ $.ddMM.mm_ddMultipleFields = {
 							.$field
 							.val(fieldId.value)
 						;
-						//Обновляем значение в массиве
+						//Обновляем значение в объекте
 						columnValuesObject[fieldId.columnKey] = fieldId.value;
-						//Пересобираем строку
-						columnValuesString = columnValuesObject.join(
-							_this
-								.instances[params.id]
-								.colDelimiter
-						);
 					}
 					
-					fieldValueObject.push(columnValuesString);
+					fieldValueObject[rowKey] = columnValuesObject;
 				}
 			})
 		;
@@ -222,12 +199,8 @@ $.ddMM.mm_ddMultipleFields = {
 			.instances[params.id]
 			.$originalField
 			.val(
-				fieldValueObject
-					.join(
-						_this
-							.instances[params.id]
-							.rowDelimiter
-					)
+				JSON
+					.stringify(fieldValueObject)
 					//Decode some HTML entities
 					.replace(
 						'&lt;',
@@ -247,7 +220,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.1.4 (2020-05-25)
+	 * @version 4.2 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -256,8 +229,6 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @param params.value {string} — TV value.
 	 * @param params.$parent {jQuery} — TV parent.
 	 * @param params.$originalField {jQuery} — TV.
-	 * @param params.rowDelimiter {string} — Разделитель строк.
-	 * @param params.colDelimiter {string} — Разделитель колонок.
 	 * @param params.columns {string_commaSeparated|array} — Колонки.
 	 * @param params.columns[i] {objectPlain} — Колонка.
 	 * @param params.columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
@@ -268,17 +239,60 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @param params.minRowsNumber {integer} — Минимальное количество строк.
 	 * @param params.maxRowsNumber {integer} — Максимальное количество строк.
 	 * 
+	 * Deprecated:
+	 * @param params.rowDelimiter {string} — Разделитель строк.
+	 * @param params.colDelimiter {string} — Разделитель колонок.
+	 * 
 	 * @returns {void}
 	 */
 	init: function(instance){
 		var
 			_this = this,
-			//Разбиваем значение по строкам
-			fieldValueObject = instance.value.split(instance.rowDelimiter);
+			fieldValueObject = {};
 		;
+		
+		//If value is JSON object
+		if (
+			$.trim(instance.value).substr(
+				0,
+				1
+			) ==
+			'{'
+		){
+			fieldValueObject = $.parseJSON(instance.value);
+		//Bacward compatibility
+		}else{
+			$.each(
+				//Разбиваем значение по строкам
+				instance
+					.value
+					.split(instance.rowDelimiter)
+				,
+				function(
+					rowKey,
+					rowValue
+				){
+					//Init row
+					fieldValueObject[rowKey] = {};
+					
+					$.each(
+						//Split by column
+						rowValue.split(instance.colDelimiter),
+						function(
+							colKey,
+							colValue
+						){
+							//Save column value
+							fieldValueObject[rowKey][colKey] = colValue;
+						}
+					)
+				}
+			);
+		}
 		
 		//Это поле нужно было только для инициализации
 		delete instance.value;
+		
 		//Инициализируем кнопки +
 		instance.$addButtons = $();
 		
@@ -352,18 +366,40 @@ $.ddMM.mm_ddMultipleFields = {
 		//Проверяем на максимальное и минимальное количество строк
 		if (
 			instance.maxRowsNumber &&
-			fieldValueObject.length > instance.maxRowsNumber
+			Object.keys(fieldValueObject).length > instance.maxRowsNumber
 		){
-			fieldValueObject.length = instance.maxRowsNumber;
+			var fieldValueObjectLength = Object.keys(fieldValueObject).length;
+			
+			$.each(
+				fieldValueObject,
+				function(
+					rowKey,
+					rowValue
+				){
+					if (
+						fieldValueObjectLength >
+						instance.maxRowsNumber
+					){
+						delete fieldValueObject[rowKey];
+					}else{
+						return false;
+					}
+					
+					fieldValueObjectLength--;
+				}
+			);
 		}else if (
 			instance.minRowsNumber &&
-			fieldValueObject.length < instance.minRowsNumber
+			Object.keys(fieldValueObject).length < instance.minRowsNumber
 		){
-			fieldValueObject.length = instance.minRowsNumber;
-			fieldValueObject.fill(
-				'',
-				fieldValueObject.length
-			);
+			for (
+				var rowIndex = Object.keys(fieldValueObject).length;
+				rowIndex < instance.minRowsNumber;
+				rowIndex++
+			){
+				//Init empty row
+				fieldValueObject[rowIndex] = {};
+			}
 		}
 		
 		$.each(
@@ -406,13 +442,13 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createRow
-	 * @version 3.0 (2020-05-25)
+	 * @version 4.0 (2020-05-25)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
 	 * @param params {objectPlain} — The parameters.
 	 * @param params.id {string} — TV id.
-	 * @param [params.value=''] {string} — Row value.
+	 * @param [params.value={}] {objectPlain} — Row value.
 	 * @param [params.$insertAfter=''] {string} — Row value.
 	 * 
 	 * @returns {jQuery}
@@ -461,8 +497,10 @@ $.ddMM.mm_ddMultipleFields = {
 			$fieldRow.appendTo(_this.instances[params.id].$table);
 		}
 		
-		//Разбиваем переданное значение на колонки
-		params.value = params.value.split(_this.instances[params.id].colDelimiter);
+		//Init empty value
+		if (!$.isPlainObject(params.value)){
+			params.value = {};
+		}
 		
 		var $field;
 		
@@ -1108,12 +1146,14 @@ $.ddMM.mm_ddMultipleFields = {
  * @desc Делает мультиполя.
  * 
  * @param [params] {objectPlain} — The parameters.
- * @param [params.rowDelimiter='||'] {string} — Разделитель строк.
- * @param [params.colDelimiter='::'] {string} — Разделитель колонок.
  * @param [params.columns='field'] {string_commaSeparated|array} — Колонки.
  * @param [params.previewStyle=''] {string} — Стиль превьюшек.
  * @param [params.minRowsNumber=0] {integer} — Минимальное количество строк.
  * @param [params.maxRowsNumber=0] {integer} — Максимальное количество строк.
+ * 
+ * Deprecated:
+ * @param [params.rowDelimiter='||'] {string} — Разделитель строк.
+ * @param [params.colDelimiter='::'] {string} — Разделитель колонок.
  * 
  * @copyright 2013–2020 [DD Group]{@link https://DivanDesign.biz }
  */
