@@ -1,11 +1,11 @@
 <?php
 /**
  * mm_ddMultipleFields
- * @version 4.7.4 (2019-06-23)
+ * @version 4.8 (2020-05-25)
  * 
  * @link https://code.divandesign.biz/modx/mm_ddmultiplefields
  * 
- * @copyright 2012–2018 DD Group {@link http://DivanDesign.biz }
+ * @copyright 2012–2020 DD Group {@link http://DivanDesign.biz }
  */
 
 function mm_ddMultipleFields($params){

@@ -1,6 +1,20 @@
 # (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields changelog
 
 
+## Version 4.8 (2020-05-25)
+* \* Richtext column: `<`, `>` and `&` are not replaced to HTML entities (`&lt;`, `&gt;` and `&amp;` respectively).
+* \* TV value stores as a JSON object, no more separated strings (with backward compatibility).
+* \+ The widget always generates an unique ID for each row and save it as a row key in result object (see README).
+* \* Parameters → `$params->columns[i]['type']`: The `'id'` value is deprecated (with backward compatibility).
+* \* It is strongly recommend to use (MODX)EvolutionCMS.snippets.ddGetMultipleField >= 3.5 for rendering TVs on site.
+* \+ Empty rows (rows objects with empty column values) will not be saved.
+* \+ README.
+* \+ README_ru.
+* \+ CHANGELOG.
+* \+ CHANGELOG_ru.
+* \+ Composer.json.
+
+
 ## Version 4.7.4 (2019-06-23)
 * \* New path of (MODX)EvolutionCMS.libraries.ddTools for compatibility with the new ManagerManager version.
 
