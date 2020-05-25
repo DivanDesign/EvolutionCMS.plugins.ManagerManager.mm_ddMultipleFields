@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.2.2 (2020-05-25)
+ * @version 2.3 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -37,7 +37,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @prop instances[item].id {string} — Unique TV id (similar to key).
 	 * @prop instances[item].columns {array} — Колонки. Default: 'field'.
 	 * @prop instances[item].columns[i] {objectPlain} — Колонка.
-	 * @prop instances[item].columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
+	 * @prop instances[item].columns[i].type {'text'|'textarea'|'richtext'|'date'|'select'} — Тип.
 	 * @prop instances[item].columns[i].title {string} — Заголовок.
 	 * @prop instances[item].columns[i].width {string} — Ширина.
 	 * @prop instances[item].columns[i].data {string_JSON_array} — Данные (для type == 'select').
@@ -85,7 +85,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 4.0 (2020-05-25)
+	 * @version 4.1 (2020-05-25)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -106,54 +106,18 @@ $.ddMM.mm_ddMultipleFields = {
 			.instances[params.instanceId]
 			.$table
 			.find('.ddMultipleField_row')
-			.each(function(
-				rowKey,
-				rowElement
-			){
+			.each(function(){
 				var
-					$this = $(rowElement),
-					columnValuesObject = {},
-					fieldId = {
-						columnKey: false,
-						value: false,
-						$field: false
-					}
+					$row = $(this),
+					//Get row ID from the `data-dd-row-id` attr
+					rowId = $row.data('ddRowId'),
+					columnValuesObject = {}
 				;
 				
 				//Перебираем все колонки, закидываем значения в массив
-				$this
+				$row
 					.find('.ddMultipleField_row_col_field')
 					.each(function(columnKey){
-						//Если поле с типом id TODO: Какой смысл по всех этих манипуляциях?
-						if (
-							_this
-								.instances[params.instanceId]
-								.columns[columnKey]
-								.type
-							==
-							'id'
-						){
-							fieldId.columnKey = columnKey;
-							fieldId.$field = $(this);
-							
-							//Сохраняем значение поля
-							fieldId.value =
-								fieldId
-									.$field
-									.val()
-							;
-							//Если значение пустое, то генерим
-							if (fieldId.value == ''){
-								fieldId.value = (new Date).getTime();
-							}
-							
-							//Обнуляем значение (чтобы ID не сохранялся, если остальные колонки пусты)
-							fieldId
-								.$field
-								.val('')
-							;
-						}
-						
 						//Если колонка типа richtext
 						if (
 							_this
@@ -178,18 +142,7 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				//Если значение было хоть в одной колонке из всех в этой строке
 				if (!$.isEmptyObject(columnValuesObject)){
-					//Проверяем было ли поле с id
-					if (fieldId.columnKey !== false){
-						//Записываем значение в поле
-						fieldId
-							.$field
-							.val(fieldId.value)
-						;
-						//Обновляем значение в объекте
-						columnValuesObject[fieldId.columnKey] = fieldId.value;
-					}
-					
-					fieldValueObject[rowKey] = columnValuesObject;
+					fieldValueObject[rowId] = columnValuesObject;
 				}
 			})
 		;
@@ -220,7 +173,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.2.1 (2020-05-25)
+	 * @version 4.3 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -231,7 +184,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @param params.$originalField {jQuery} — TV.
 	 * @param params.columns {string_commaSeparated|array} — Колонки.
 	 * @param params.columns[i] {objectPlain} — Колонка.
-	 * @param params.columns[i].type {'text'|'textarea'|'richtext'|'date'|'id'|'select'} — Тип.
+	 * @param params.columns[i].type {'text'|'textarea'|'richtext'|'date'|'select'} — Тип.
 	 * @param [params.columns[i].title=''] {string} — Заголовок.
 	 * @param [params.columns[i].width=180] {integer} — Ширина.
 	 * @param [params.columns[i].data=''] {integer} — Данные (для type == 'select').
@@ -253,7 +206,9 @@ $.ddMM.mm_ddMultipleFields = {
 			//Шапка таблицы
 			tableHeaderHtml = '',
 			//По умолчанию без шапки
-			isTableHeaderDisplayed = false
+			isTableHeaderDisplayed = false,
+			//Backward compatibility
+			columnIdIndex = -1
 		;
 		
 		//Перебираем колонки
@@ -263,6 +218,17 @@ $.ddMM.mm_ddMultipleFields = {
 				columnIndex,
 				columnObject
 			){
+				//If it is deprecated ID column
+				if (columnObject.type == 'id'){
+					columnIdIndex = columnIndex;
+					
+					//Remove deprecated column
+					delete instance.columns[columnIndex];
+					
+					//Continue
+					return true;
+				}
+				
 				//Prepare title
 				if (!columnObject.title){
 					instance.columns[columnIndex].title = '';
@@ -282,13 +248,6 @@ $.ddMM.mm_ddMultipleFields = {
 				//Prepare data
 				if (!columnObject.data){
 					instance.columns[columnIndex].data = '';
-				}
-				
-				//Если это колонка с id
-				if (columnObject.type == 'id'){
-					tableHeaderHtml += '<th style="display: none;"></th>';
-				}else{
-					tableHeaderHtml += '<th>' + columnObject.title + '</th>';
 				}
 			}
 		);
@@ -310,22 +269,34 @@ $.ddMM.mm_ddMultipleFields = {
 					.value
 					.split(instance.rowDelimiter)
 				,
-				function(
-					rowKey,
-					rowValue
-				){
+				function(){
+					var
+						//Split by column
+						columnValuesArray = this.split(instance.colDelimiter),
+						//Generate row ID
+						rowId = (new Date).getTime()
+					;
+					
+					//If deprecated ID column exists
+					if (columnIdIndex != -1){
+						rowId = columnValuesArray[columnIdIndex];
+					}
+					
 					//Init row
-					fieldValueObject[rowKey] = {};
+					fieldValueObject[rowId] = {};
 					
 					$.each(
-						//Split by column
-						rowValue.split(instance.colDelimiter),
+						columnValuesArray,
 						function(
 							colKey,
 							colValue
 						){
+							//If it is deprecated ID column
+							if (colKey == columnIdIndex){
+								
+							}
 							//Save column value
-							fieldValueObject[rowKey][colKey] = colValue;
+							fieldValueObject[rowId][colKey] = colValue;
 						}
 					)
 				}
@@ -402,10 +373,14 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		$.each(
 			fieldValueObject,
-			function(){
+			function(
+				rowId,
+				rowValue
+			){
 				_this.createRow({
 					instanceId: instance.id,
-					value: this
+					rowId: rowId,
+					value: rowValue
 				});
 			}
 		);
@@ -440,12 +415,13 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createRow
-	 * @version 5.0 (2020-05-25)
+	 * @version 5.1 (2020-05-25)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
 	 * @param params {objectPlain} — The parameters.
 	 * @param params.instanceId {string} — TV id.
+	 * @param [params.rowId=(new Date).getTime()] {integer} — Row ID.
 	 * @param [params.value={}] {objectPlain} — Row value.
 	 * @param [params.$insertAfter=''] {string} — Row value.
 	 * 
@@ -455,7 +431,8 @@ $.ddMM.mm_ddMultipleFields = {
 		//Defaults
 		params = $.extend(
 			{
-				value: ''
+				rowId: (new Date).getTime(),
+				value: {}
 			},
 			params
 		);
@@ -485,7 +462,9 @@ $.ddMM.mm_ddMultipleFields = {
 				$(
 					'<tr class="ddMultipleField_row ' +
 					params.instanceId +
-					'ddMultipleField_row"><td class="ddSortHandle"><div class="fa fa-sort"></div></td></tr>'
+					'ddMultipleField_row" data-dd-row-id="' +
+					params.rowId +
+					'"><td class="ddSortHandle"><div class="fa fa-sort"></div></td></tr>'
 				)
 		;
 		
@@ -493,11 +472,6 @@ $.ddMM.mm_ddMultipleFields = {
 			$fieldRow.insertAfter(params.$insertAfter);
 		}else{
 			$fieldRow.appendTo(_this.instances[params.instanceId].$table);
-		}
-		
-		//Init empty value
-		if (!$.isPlainObject(params.value)){
-			params.value = {};
 		}
 		
 		var $field;
@@ -557,20 +531,6 @@ $.ddMM.mm_ddMultipleFields = {
 							}
 						)
 					;
-				//Если id
-				}else if (_this.instances[params.instanceId].columns[key].type == 'id'){
-					$field = _this.createFieldText({
-						value: params.value[key],
-						title: '',
-						width: 0,
-						$fieldCol: $col
-					});
-					
-					if (!($field.val())){
-						$field.val((new Date).getTime());
-					}
-					
-					$col.hide();
 				//Если селект
 				}else if(_this.instances[params.instanceId].columns[key].type == 'select'){
 					_this.createFieldSelect({

@@ -7,7 +7,7 @@ Capabilities:
 * Create several columns with different (or identical) data types. For example: images with titles (`$params->columns`).
 * Number of rows may be fixed, dynamic or may lay in the special range (`$params->minRowsNumber`, `$params->maxRowsNumber`).
 * Rows sorting by drag and drop.
-* Generating of an unique ID for each row (`$params->columns[i]['type']` == `'id'`).
+* Generating of an unique ID for each row.
 * List of predefined values for a column (`$params->columns[i]['type']` == `'select'`).
 
 
@@ -67,7 +67,6 @@ Type of TV must be `textarea`.
 		* `'image'` — image column
 		* `'file'` — file column
 		* `'date'` — date column
-		* `'id'` — hidden column containing unique ID (will be auto generated)
 		* `'select'` — `<select>` column (see `$params->columns[i]['data']`)
 	* **Required**
 	
@@ -152,6 +151,30 @@ Type of TV must be `textarea`.
 
 * `OnDocFormPrerender`
 * `OnDocFormRender`
+
+
+### Output format
+
+The widget save value to a TV as JSON object with the following structure:
+
+```json
+{
+	"1590412453247": {
+		"0": "First row, first column value",
+		"1": "First row, second column value"
+	},
+	"1590412497589": {
+		"0": "Second row, first column value",
+		"1": "Second row, Second column value"
+	}
+}
+```
+
+Where:
+* `1590412453247`, `1590412497589` — the unique auto generated row IDs (JS `(new Date).getTime()` is used while creating rows).
+* `0`, `1` — column numbers.
+
+It is strongly recommend to use [(MODX)EvolutionCMS.snippets.ddGetMultipleField](https://code.divandesign.biz/modx/ddgetmultiplefield) >= 3.5 for rendering TVs on site.
 
 
 ### Examples

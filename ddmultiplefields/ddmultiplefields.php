@@ -46,13 +46,13 @@ function mm_ddMultipleFields($params){
 			],
 			'minRowsNumber' => 0,
 			'maxRowsNumber' => 0,
-			'rowDelimiter' => '||',
-			'colDelimiter' => '::',
 			'previewWidth' => 300,
 			'previewHeight' => 100,
 			'roles' => '',
 			'templates' => '',
 			//Deprecated
+			'rowDelimiter' => '||',
+			'colDelimiter' => '::',
 			'columnsTitles' => '',
 			'columnsWidth' => '180',
 			'columnsData' => ''
@@ -103,7 +103,7 @@ function mm_ddMultipleFields($params){
 			),
 			'html',
 			'jQuery.ddMM.mm_ddMultipleFields',
-			'2.2.2'
+			'2.3'
 		);
 		
 		$e->output($output);
