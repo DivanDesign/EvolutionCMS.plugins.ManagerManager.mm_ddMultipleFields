@@ -1,6 +1,11 @@
 # (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields changelog
 
 
+## Version 4.8.1 (2020-05-25)
+* \* Improved uniqueness row ID while it is used for backward compatibility.
+* \* `jQuery.ddMM.mm_ddMultipleFields.init`: Fixed deprecated ID column using.
+
+
 ## Version 4.8 (2020-05-25)
 * \* Richtext column: `<`, `>` and `&` are not replaced to HTML entities (`&lt;`, `&gt;` and `&amp;` respectively).
 * \* TV value stores as a JSON object, no more separated strings (with backward compatibility).
