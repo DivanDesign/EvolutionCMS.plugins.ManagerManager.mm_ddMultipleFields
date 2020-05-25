@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.1.7 (2020-05-22)
+ * @version 2.1.8 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -246,7 +246,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.1.2 (2020-05-22)
+	 * @version 4.1.3 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -273,7 +273,7 @@ $.ddMM.mm_ddMultipleFields = {
 		var
 			_this = this,
 			//Разбиваем значение по строкам
-			value = instance.value.split(instance.rowDelimiter);
+			fieldValueObject = instance.value.split(instance.rowDelimiter);
 		;
 		
 		//Это поле нужно было только для инициализации
@@ -298,45 +298,47 @@ $.ddMM.mm_ddMultipleFields = {
 			//Шапка таблицы
 			tableHeaderHtml = '',
 			//По умолчанию без шапки
-			showTableHeader = false
+			isTableHeaderDisplayed = false
 		;
 		
 		//Перебираем колонки
 		$.each(
 			instance.columns,
 			function(
-				key,
-				val
+				columnIndex,
+				columnObject
 			){
-				//Defaults
-				if (!val.title){
-					instance.columns[key].title = '';
+				//Prepare title
+				if (!columnObject.title){
+					instance.columns[columnIndex].title = '';
 				}else{
-					showTableHeader = true;
+					isTableHeaderDisplayed = true;
 				}
-				if (!val.width){
-					if (key > 0){
+				//Prepare width
+				if (!columnObject.width){
+					if (columnIndex > 0){
 						//Take from preverious column
-						instance.columns[key].width = instance.columns[key - 1].width;
+						instance.columns[columnIndex].width = instance.columns[columnIndex - 1].width;
 					}else{
 						//Or by default
-						instance.columns[key].width = 180;
+						instance.columns[columnIndex].width = 180;
 					}
 				}
-				if (!val.data){
-					instance.columns[key].data = '';
+				//Prepare data
+				if (!columnObject.data){
+					instance.columns[columnIndex].data = '';
 				}
 				
 				//Если это колонка с id
-				if (val.type == 'id'){
+				if (columnObject.type == 'id'){
 					tableHeaderHtml += '<th style="display: none;"></th>';
 				}else{
-					tableHeaderHtml += '<th>' + val.title + '</th>';
+					tableHeaderHtml += '<th>' + columnObject.title + '</th>';
 				}
 			}
 		);
 		
-		if (showTableHeader){
+		if (isTableHeaderDisplayed){
 			$(
 				'<tr><th></th>' +
 				tableHeaderHtml +
@@ -349,33 +351,29 @@ $.ddMM.mm_ddMultipleFields = {
 		//Проверяем на максимальное и минимальное количество строк
 		if (
 			instance.maxRowsNumber &&
-			value.length > instance.maxRowsNumber
+			fieldValueObject.length > instance.maxRowsNumber
 		){
-			value.length = instance.maxRowsNumber;
+			fieldValueObject.length = instance.maxRowsNumber;
 		}else if (
 			instance.minRowsNumber &&
-			value.length < instance.minRowsNumber
+			fieldValueObject.length < instance.minRowsNumber
 		){
-			value.length = instance.minRowsNumber;
+			fieldValueObject.length = instance.minRowsNumber;
+			fieldValueObject.fill(
+				'',
+				fieldValueObject.length
+			);
 		}
 		
-		for (
-			var
-				i = 0,
-				len = value.length
-			;
-			i < len;
-			i++
-		){
-			//В случае, если размер массива был увеличен по minRowsNumber, значением будет undefined, посему зафигачим пустую строку
-			_this.makeFieldRow({
-				id: instance.id,
-				value: (
-					value[i] ||
-					''
-				)
-			});
-		}
+		$.each(
+			fieldValueObject,
+			function(){
+				_this.makeFieldRow({
+					id: instance.id,
+					value: this
+				});
+			}
+		);
 		
 		//Добавляем возможность перетаскивания
 		instance.$table.sortable({
