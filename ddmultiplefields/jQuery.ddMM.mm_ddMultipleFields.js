@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5.4 (2020-05-25)
+ * @version 2.5.5 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -473,14 +473,27 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method generateRowId
-	 * @version 1.0 (2020-05-25)
+	 * @version 1.1 (2020-05-25)
 	 * 
 	 * @desc Generates an uniquie ID for table row.
 	 * 
 	 * @returns {integer}
 	 */
 	generateRowId: function(){
-		return Date.now();
+		return (
+			Date.now() +
+			'' +
+			//Get random number from 100 to 999
+			Math.round(
+				(
+					Math.random() *
+					(
+						999 - 100
+					)
+				) +
+				100
+			)
+		);
 	},
 	
 	/**
