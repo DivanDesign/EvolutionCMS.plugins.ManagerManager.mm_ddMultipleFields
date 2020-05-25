@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5 (2020-05-25)
+ * @version 2.5.1 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -189,7 +189,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.3.1 (2020-05-25)
+	 * @version 4.3.2 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -308,11 +308,10 @@ $.ddMM.mm_ddMultipleFields = {
 							colValue
 						){
 							//If it is deprecated ID column
-							if (colKey == columnIdIndex){
-								
+							if (colKey != columnIdIndex){
+								//Save column value
+								fieldValueObject[rowId][colKey] = colValue;
 							}
-							//Save column value
-							fieldValueObject[rowId][colKey] = colValue;
 						}
 					)
 				}
