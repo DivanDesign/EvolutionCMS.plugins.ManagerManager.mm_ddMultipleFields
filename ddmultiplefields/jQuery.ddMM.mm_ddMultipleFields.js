@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.4 (2020-05-25)
+ * @version 2.4.1 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -183,7 +183,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.3 (2020-05-25)
+	 * @version 4.3.1 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -390,7 +390,7 @@ $.ddMM.mm_ddMultipleFields = {
 				_this.createRow({
 					instanceId: instance.id,
 					rowId: rowId,
-					value: rowValue
+					rowValue: rowValue
 				});
 			}
 		);
@@ -425,14 +425,14 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createRow
-	 * @version 5.1 (2020-05-25)
+	 * @version 6.0 (2020-05-25)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
 	 * @param params {objectPlain} — The parameters.
 	 * @param params.instanceId {string} — TV id.
 	 * @param [params.rowId=(new Date).getTime()] {integer} — Row ID.
-	 * @param [params.value={}] {objectPlain} — Row value.
+	 * @param [params.rowValue={}] {objectPlain} — Row value.
 	 * @param [params.$insertAfter=''] {string} — Row value.
 	 * 
 	 * @returns {jQuery}
@@ -442,7 +442,7 @@ $.ddMM.mm_ddMultipleFields = {
 		params = $.extend(
 			{
 				rowId: (new Date).getTime(),
-				value: {}
+				rowValue: {}
 			},
 			params
 		);
@@ -490,8 +490,8 @@ $.ddMM.mm_ddMultipleFields = {
 		$.each(
 			_this.instances[params.instanceId].columns,
 			function(key){
-				if (!params.value[key]){
-					params.value[key] = '';
+				if (!params.rowValue[key]){
+					params.rowValue[key] = '';
 				}
 				
 				var $col = _this.createColumn({$fieldRow: $fieldRow});
@@ -499,7 +499,7 @@ $.ddMM.mm_ddMultipleFields = {
 				//Если текущая колонка является изображением
 				if(_this.instances[params.instanceId].columns[key].type == 'image'){
 					$field = _this.createFieldText({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						width: _this.instances[params.instanceId].columns[key].width,
 						$fieldCol: $col
@@ -524,7 +524,7 @@ $.ddMM.mm_ddMultipleFields = {
 				//Если текущая колонка является файлом
 				}else if(_this.instances[params.instanceId].columns[key].type == 'file'){
 					$field = _this.createFieldText({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						width: _this.instances[params.instanceId].columns[key].width,
 						$fieldCol: $col
@@ -544,7 +544,7 @@ $.ddMM.mm_ddMultipleFields = {
 				//Если селект
 				}else if(_this.instances[params.instanceId].columns[key].type == 'select'){
 					_this.createFieldSelect({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						data: _this.instances[params.instanceId].columns[key].data,
 						width: _this.instances[params.instanceId].columns[key].width,
@@ -553,14 +553,14 @@ $.ddMM.mm_ddMultipleFields = {
 				//Если дата
 				}else if(_this.instances[params.instanceId].columns[key].type == 'date'){
 					_this.createFieldDate({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						$fieldCol: $col
 					});
 				//Если textarea
 				}else if(_this.instances[params.instanceId].columns[key].type == 'textarea'){
 					_this.createFieldTextarea({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						width: _this.instances[params.instanceId].columns[key].width,
 						$fieldCol: $col
@@ -568,7 +568,7 @@ $.ddMM.mm_ddMultipleFields = {
 				//Если richtext
 				}else if(_this.instances[params.instanceId].columns[key].type == 'richtext'){
 					_this.createFieldRichtext({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						width: _this.instances[params.instanceId].columns[key].width,
 						$fieldCol: $col
@@ -576,7 +576,7 @@ $.ddMM.mm_ddMultipleFields = {
 				//По дефолту делаем текстовое поле
 				}else{
 					_this.createFieldText({
-						value: params.value[key],
+						value: params.rowValue[key],
 						title: _this.instances[params.instanceId].columns[key].title,
 						width: _this.instances[params.instanceId].columns[key].width,
 						$fieldCol: $col
