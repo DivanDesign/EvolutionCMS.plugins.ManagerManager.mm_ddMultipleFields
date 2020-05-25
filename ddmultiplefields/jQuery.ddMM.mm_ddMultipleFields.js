@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.3 (2020-05-25)
+ * @version 2.4 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -85,7 +85,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 4.1 (2020-05-25)
+	 * @version 4.2 (2020-05-25)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -111,7 +111,8 @@ $.ddMM.mm_ddMultipleFields = {
 					$row = $(this),
 					//Get row ID from the `data-dd-row-id` attr
 					rowId = $row.data('ddRowId'),
-					columnValuesObject = {}
+					columnValuesObject = {},
+					isRowEmpty = true
 				;
 				
 				//Перебираем все колонки, закидываем значения в массив
@@ -137,11 +138,20 @@ $.ddMM.mm_ddMultipleFields = {
 								$(this).val()
 							);
 						}
+						
+						//If row is still marked as empty
+						if (isRowEmpty){
+							//Depends on this column value length
+							isRowEmpty =
+								columnValuesObject[columnKey].length ==
+								0
+							;
+						}
 					})
 				;
 				
 				//Если значение было хоть в одной колонке из всех в этой строке
-				if (!$.isEmptyObject(columnValuesObject)){
+				if (!isRowEmpty){
 					fieldValueObject[rowId] = columnValuesObject;
 				}
 			})
