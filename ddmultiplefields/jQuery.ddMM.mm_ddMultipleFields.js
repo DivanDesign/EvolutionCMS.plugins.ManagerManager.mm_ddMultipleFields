@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.2.1 (2020-05-25)
+ * @version 2.2.2 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -220,7 +220,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.2 (2020-05-25)
+	 * @version 4.2.1 (2020-05-25)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -248,8 +248,50 @@ $.ddMM.mm_ddMultipleFields = {
 	init: function(instance){
 		var
 			_this = this,
-			fieldValueObject = {};
+			//Объект значения поля
+			fieldValueObject = {},
+			//Шапка таблицы
+			tableHeaderHtml = '',
+			//По умолчанию без шапки
+			isTableHeaderDisplayed = false
 		;
+		
+		//Перебираем колонки
+		$.each(
+			instance.columns,
+			function(
+				columnIndex,
+				columnObject
+			){
+				//Prepare title
+				if (!columnObject.title){
+					instance.columns[columnIndex].title = '';
+				}else{
+					isTableHeaderDisplayed = true;
+				}
+				//Prepare width
+				if (!columnObject.width){
+					if (columnIndex > 0){
+						//Take from preverious column
+						instance.columns[columnIndex].width = instance.columns[columnIndex - 1].width;
+					}else{
+						//Or by default
+						instance.columns[columnIndex].width = 180;
+					}
+				}
+				//Prepare data
+				if (!columnObject.data){
+					instance.columns[columnIndex].data = '';
+				}
+				
+				//Если это колонка с id
+				if (columnObject.type == 'id'){
+					tableHeaderHtml += '<th style="display: none;"></th>';
+				}else{
+					tableHeaderHtml += '<th>' + columnObject.title + '</th>';
+				}
+			}
+		);
 		
 		//If value is JSON object
 		if (
@@ -308,50 +350,6 @@ $.ddMM.mm_ddMultipleFields = {
 			)
 			.appendTo(instance.$parent)
 		;
-		
-		var
-			//Шапка таблицы
-			tableHeaderHtml = '',
-			//По умолчанию без шапки
-			isTableHeaderDisplayed = false
-		;
-		
-		//Перебираем колонки
-		$.each(
-			instance.columns,
-			function(
-				columnIndex,
-				columnObject
-			){
-				//Prepare title
-				if (!columnObject.title){
-					instance.columns[columnIndex].title = '';
-				}else{
-					isTableHeaderDisplayed = true;
-				}
-				//Prepare width
-				if (!columnObject.width){
-					if (columnIndex > 0){
-						//Take from preverious column
-						instance.columns[columnIndex].width = instance.columns[columnIndex - 1].width;
-					}else{
-						//Or by default
-						instance.columns[columnIndex].width = 180;
-					}
-				}
-				//Prepare data
-				if (!columnObject.data){
-					instance.columns[columnIndex].data = '';
-				}
-				
-				//Если это колонка с id
-				if (columnObject.type == 'id'){
-					tableHeaderHtml += '<th style="display: none;"></th>';
-				}else{
-					tableHeaderHtml += '<th>' + columnObject.title + '</th>';
-				}
-			}
-		);
 		
 		if (isTableHeaderDisplayed){
 			$(
