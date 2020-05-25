@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5.2 (2020-05-25)
+ * @version 2.5.3 (2020-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -352,7 +352,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 1.0 (2020-05-25)
+	 * @version 1.0.1 (2020-05-25)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
@@ -383,12 +383,16 @@ $.ddMM.mm_ddMultipleFields = {
 			fieldValueObject = $.parseJSON(params.value);
 		//Bacward compatibility
 		}else{
-			$.each(
+			var
 				//Разбиваем значение по строкам
-				params
-					.value
-					.split(params.rowDelimiter)
-				,
+				rowValuesArray =
+					params
+						.value
+						.split(params.rowDelimiter)
+			;
+			
+			$.each(
+				rowValuesArray,
 				function(){
 					var
 						//Split by column
@@ -422,13 +426,13 @@ $.ddMM.mm_ddMultipleFields = {
 			);
 		}
 		
+		var fieldValueObjectLength = Object.keys(fieldValueObject).length;
+		
 		//Проверяем на максимальное и минимальное количество строк
 		if (
 			params.maxRowsNumber &&
-			Object.keys(fieldValueObject).length > params.maxRowsNumber
+			fieldValueObjectLength > params.maxRowsNumber
 		){
-			var fieldValueObjectLength = Object.keys(fieldValueObject).length;
-			
 			$.each(
 				fieldValueObject,
 				function(
@@ -449,10 +453,10 @@ $.ddMM.mm_ddMultipleFields = {
 			);
 		}else if (
 			params.minRowsNumber &&
-			Object.keys(fieldValueObject).length < params.minRowsNumber
+			fieldValueObjectLength < params.minRowsNumber
 		){
 			for (
-				var rowIndex = Object.keys(fieldValueObject).length;
+				var rowIndex = fieldValueObjectLength;
 				rowIndex < params.minRowsNumber;
 				rowIndex++
 			){
