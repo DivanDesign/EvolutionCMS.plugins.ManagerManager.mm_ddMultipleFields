@@ -1,6 +1,11 @@
 # (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields changelog
 
 
+## Version 4.8.3 (2020-12-19)
+* \* Richtext column: TinyMCE uses CMS config.
+* \* The repository structure was changed.
+
+
 ## Version 4.8.2 (2020-05-26)
 * \* Richtext column: **All** `<`, `>` and `&` are not replaced to HTML entities (`&lt;`, `&gt;` and `&amp;` respectively).
 
