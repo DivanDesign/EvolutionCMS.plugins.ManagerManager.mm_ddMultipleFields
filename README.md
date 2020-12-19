@@ -155,7 +155,7 @@ Type of TV must be `textarea`.
 
 ### Output format
 
-The widget save value to a TV as JSON object with the following structure:
+The widget saves value to a TV as JSON object with the following structure:
 
 ```json
 {
@@ -174,7 +174,8 @@ Where:
 * `1590412453247`, `1590412497589` — the unique auto generated row IDs (JS `(new Date).getTime()` is used while creating rows).
 * `0`, `1` — column numbers.
 
-Rows objects with empty column values will not be saved. If all columns and all rows are empty, an empty string (`''`) will be saved instead of an empty JSON ojbect (`'{}'`).
+Rows objects with empty column values will not be saved.
+If all columns and all rows are empty, an empty string (`''`) will be saved instead of an empty JSON ojbect (`'{}'`).
 
 It is strongly recommend to use [(MODX)EvolutionCMS.snippets.ddGetMultipleField](https://code.divandesign.biz/modx/ddgetmultiplefield) >= 3.5 for rendering TVs on site.
 
