@@ -296,7 +296,7 @@ mm_ddMultipleFields([
 ## Ссылки
 
 * [Home page](https://code.divandesign.ru/modx/mm_ddmultiplefields)
-* [Telegram chat](https://tele.click/dd_code)
+* [Telegram chat](https://t.me/dd_code)
 * [Packagist](https://packagist.org/packages/dd/evolutioncms-plugins-managermanager-mm_ddmultiplefields)
 
 
