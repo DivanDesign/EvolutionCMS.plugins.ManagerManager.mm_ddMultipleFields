@@ -107,7 +107,7 @@ function mm_ddMultipleFields($params){
 		);
 		
 		$e->output($output);
-	}else if ($e->name == 'OnDocFormRender'){
+	}elseif ($e->name == 'OnDocFormRender'){
 		global $mm_current_page;
 		
 		$params->fields = tplUseTvs(
