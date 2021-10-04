@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5.8 (2021-10-04)
+ * @version 2.5.9 (2021-10-04)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -369,7 +369,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 1.0.3 (2021-10-04)
+	 * @version 1.1 (2021-10-04)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
@@ -400,7 +400,11 @@ $.ddMM.mm_ddMultipleFields = {
 			) ==
 			'{'
 		){
-			fieldValueObject = $.parseJSON(params.value);
+			try {
+				fieldValueObject = $.parseJSON(params.value);
+			}catch{
+				fieldValueObject = {};
+			}
 		//Bacward compatibility
 		}else{
 			var
