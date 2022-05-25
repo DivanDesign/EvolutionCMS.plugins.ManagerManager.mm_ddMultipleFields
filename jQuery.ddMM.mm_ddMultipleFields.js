@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.6.1 (2022-05-26)
+ * @version 2.6.2 (2022-05-26)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -186,7 +186,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.4.1 (2022-05-26)
+	 * @version 4.4.2 (2022-05-26)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -212,7 +212,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * 
 	 * @returns {void}
 	 */
-	init: function(instance){
+	init: function(theInstance){
 		var
 			_this = this,
 			//Шапка таблицы
@@ -222,18 +222,18 @@ $.ddMM.mm_ddMultipleFields = {
 		;
 		
 		//Provides backward compatibility
-		instance.columnIdIndex = -1;
+		theInstance.columnIdIndex = -1;
 		
 		//Перебираем колонки
 		$.each(
-			instance.columns,
+			theInstance.columns,
 			function(
 				columnIndex,
 				columnObject
 			){
 				//If it is deprecated ID column
 				if (columnObject.type == 'id'){
-					instance.columnIdIndex = columnIndex;
+					theInstance.columnIdIndex = columnIndex;
 					
 					//Continue
 					return true;
@@ -246,7 +246,7 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				//Prepare title
 				if (!columnObject.title){
-					instance.columns[columnIndex].title = '';
+					theInstance.columns[columnIndex].title = '';
 				}else{
 					isTableHeaderDisplayed = true;
 				}
@@ -260,53 +260,53 @@ $.ddMM.mm_ddMultipleFields = {
 				if (!columnObject.width){
 					if (
 						//Preverious column exist
-						$.isPlainObject(instance.columns[columnIndex - 1]) &&
-						instance.columns[columnIndex - 1].width
+						$.isPlainObject(theInstance.columns[columnIndex - 1]) &&
+						theInstance.columns[columnIndex - 1].width
 					){
 						//Take from preverious column
-						instance.columns[columnIndex].width = instance.columns[columnIndex - 1].width;
+						theInstance.columns[columnIndex].width = theInstance.columns[columnIndex - 1].width;
 					}else{
 						//Or by default
-						instance.columns[columnIndex].width = 180;
+						theInstance.columns[columnIndex].width = 180;
 					}
 				}
 				
 				//Prepare data
 				if (!columnObject.data){
-					instance.columns[columnIndex].data = '';
+					theInstance.columns[columnIndex].data = '';
 				}
 			}
 		);
 		
 		//If deprecated ID column exists
-		if (instance.columnIdIndex != -1){
+		if (theInstance.columnIdIndex != -1){
 			//Remove it
-			instance.columns.splice(
-				instance.columnIdIndex,
+			theInstance.columns.splice(
+				theInstance.columnIdIndex,
 				1
 			);
 		}
 		
 		//Объект значения поля
-		var fieldValueObject = _this.init_prepareFieldValueObject(instance);
+		var fieldValueObject = _this.init_prepareFieldValueObject(theInstance);
 		
 		//Это поле нужно было только для инициализации
-		delete instance.value;
+		delete theInstance.value;
 		
 		//Инициализируем кнопки +
-		instance.$addButtons = $();
+		theInstance.$addButtons = $();
 		
 		//Сохраняем экземпляр текущего объекта с правилами
-		_this.instances[instance.id] = instance;
+		_this.instances[theInstance.id] = theInstance;
 		
 		//Делаем таблицу мульти-поля
-		instance.$table =
+		theInstance.$table =
 			$(
 				'<table class="ddMultipleField" id="' +
-				instance.id +
+				theInstance.id +
 				'ddMultipleField"></table>'
 			)
-			.appendTo(instance.$parent)
+			.appendTo(theInstance.$parent)
 		;
 		
 		if (isTableHeaderDisplayed){
@@ -315,7 +315,7 @@ $.ddMM.mm_ddMultipleFields = {
 				tableHeaderHtml +
 				'<th></th></tr>'
 			)
-				.appendTo(instance.$table)
+				.appendTo(theInstance.$table)
 			;
 		}
 		
@@ -326,7 +326,7 @@ $.ddMM.mm_ddMultipleFields = {
 				rowValue
 			){
 				_this.createRow({
-					instanceId: instance.id,
+					instanceId: theInstance.id,
 					rowId: rowId,
 					rowValue: rowValue
 				});
@@ -334,7 +334,7 @@ $.ddMM.mm_ddMultipleFields = {
 		);
 		
 		//Добавляем возможность перетаскивания
-		instance.$table.sortable({
+		theInstance.$table.sortable({
 			items: 'tr:has(td)',
 			handle: '.ddSortHandle',
 			cursor: 'n-resize',
@@ -348,7 +348,7 @@ $.ddMM.mm_ddMultipleFields = {
 					.placeholder
 					.html(
 						'<td colspan="' +
-						(instance.columns.length + 2) +
+						(theInstance.columns.length + 2) +
 						'"><div></div></td>'
 					)
 					.find('div')
