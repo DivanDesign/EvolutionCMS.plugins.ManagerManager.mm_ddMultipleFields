@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.6 (2022-05-25)
+ * @version 2.6.1 (2022-05-26)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -54,6 +54,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * Backward compatibility
 	 * @prop instances[item].rowDelimiter {string} — Разделитель строк.
 	 * @prop instances[item].colDelimiter {string} — Разделитель колонок.
+	 * @prop instances[item].columnIdIndex {integer} — Index of the deprecated ID column.
 	 */
 	instances: {},
 	richtextWindow: null,
@@ -185,7 +186,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.4 (2022-05-25)
+	 * @version 4.4.1 (2022-05-26)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -217,10 +218,11 @@ $.ddMM.mm_ddMultipleFields = {
 			//Шапка таблицы
 			tableHeaderHtml = '',
 			//По умолчанию без шапки
-			isTableHeaderDisplayed = false,
-			//Backward compatibility
-			columnIdIndex = -1
+			isTableHeaderDisplayed = false;
 		;
+		
+		//Provides backward compatibility
+		instance.columnIdIndex = -1;
 		
 		//Перебираем колонки
 		$.each(
@@ -231,7 +233,7 @@ $.ddMM.mm_ddMultipleFields = {
 			){
 				//If it is deprecated ID column
 				if (columnObject.type == 'id'){
-					columnIdIndex = columnIndex;
+					instance.columnIdIndex = columnIndex;
 					
 					//Continue
 					return true;
@@ -277,26 +279,16 @@ $.ddMM.mm_ddMultipleFields = {
 		);
 		
 		//If deprecated ID column exists
-		if (columnIdIndex != -1){
+		if (instance.columnIdIndex != -1){
 			//Remove it
 			instance.columns.splice(
-				columnIdIndex,
+				instance.columnIdIndex,
 				1
 			);
 		}
 		
-		var
-			//Объект значения поля
-			fieldValueObject = _this.init_prepareFieldValueObject({
-				value: instance.value,
-				minRowsNumber: instance.minRowsNumber,
-				maxRowsNumber: instance.maxRowsNumber,
-				
-				columnIdIndex: columnIdIndex,
-				rowDelimiter: instance.rowDelimiter,
-				colDelimiter: instance.colDelimiter
-			})
-		;
+		//Объект значения поля
+		var fieldValueObject = _this.init_prepareFieldValueObject(instance);
 		
 		//Это поле нужно было только для инициализации
 		delete instance.value;
@@ -371,23 +363,15 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 1.1 (2021-10-04)
+	 * @version 2.0 (2022-05-26)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
-	 * @param params {objectPlain} — The parameters.
-	 * @param params.value {string} — TV value.
-	 * @param params.minRowsNumber {integer} — Минимальное количество строк.
-	 * @param params.maxRowsNumber {integer} — Максимальное количество строк.
-	 * @param params.columnIdIndex {integer} — Index of deprecated ID column (`-1` if not exist).
-	 * 
-	 * Deprecated:
-	 * @param params.rowDelimiter {string} — Разделитель строк.
-	 * @param params.colDelimiter {string} — Разделитель колонок.
+	 * @param theInstance {objectPlain} — The instance. @required
 	 * 
 	 * @returns {objectPlain}
 	 */
-	init_prepareFieldValueObject: function(params){
+	init_prepareFieldValueObject: function(theInstance){
 		var
 			_this = this,
 			//Объект значения поля
@@ -396,14 +380,14 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		//If value is JSON object
 		if (
-			$.trim(params.value).substr(
+			$.trim(theInstance.value).substr(
 				0,
 				1
 			) ==
 			'{'
 		){
 			try {
-				fieldValueObject = $.parseJSON(params.value);
+				fieldValueObject = $.parseJSON(theInstance.value);
 			}catch{
 				fieldValueObject = {};
 			}
@@ -412,9 +396,9 @@ $.ddMM.mm_ddMultipleFields = {
 			var
 				//Разбиваем значение по строкам
 				rowValuesArray =
-					params
+					theInstance
 						.value
-						.split(params.rowDelimiter)
+						.split(theInstance.rowDelimiter)
 			;
 			
 			$.each(
@@ -422,18 +406,18 @@ $.ddMM.mm_ddMultipleFields = {
 				function(){
 					var
 						//Split by column
-						columnValuesArray = this.split(params.colDelimiter),
+						columnValuesArray = this.split(theInstance.colDelimiter),
 						//Generate row ID
 						rowId = _this.generateRowId()
 					;
 					
 					if (
 						//If deprecated ID column exists
-						params.columnIdIndex != -1 &&
+						theInstance.columnIdIndex != -1 &&
 						//And not empty
-						columnValuesArray[params.columnIdIndex] != ''
+						columnValuesArray[theInstance.columnIdIndex] != ''
 					){
-						rowId = columnValuesArray[params.columnIdIndex];
+						rowId = columnValuesArray[theInstance.columnIdIndex];
 					}
 					
 					//Init row
@@ -446,7 +430,7 @@ $.ddMM.mm_ddMultipleFields = {
 							colValue
 						){
 							//If it is deprecated ID column
-							if (colKey != params.columnIdIndex){
+							if (colKey != theInstance.columnIdIndex){
 								//Save column value
 								fieldValueObject[rowId][colKey] = colValue;
 							}
@@ -460,8 +444,8 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		//Проверяем на максимальное и минимальное количество строк
 		if (
-			params.maxRowsNumber &&
-			fieldValueObjectLength > params.maxRowsNumber
+			theInstance.maxRowsNumber &&
+			fieldValueObjectLength > theInstance.maxRowsNumber
 		){
 			$.each(
 				fieldValueObject,
@@ -471,7 +455,7 @@ $.ddMM.mm_ddMultipleFields = {
 				){
 					if (
 						fieldValueObjectLength >
-						params.maxRowsNumber
+						theInstance.maxRowsNumber
 					){
 						delete fieldValueObject[rowKey];
 					}else{
@@ -482,12 +466,12 @@ $.ddMM.mm_ddMultipleFields = {
 				}
 			);
 		}else if (
-			params.minRowsNumber &&
-			fieldValueObjectLength < params.minRowsNumber
+			theInstance.minRowsNumber &&
+			fieldValueObjectLength < theInstance.minRowsNumber
 		){
 			for (
 				var rowIndex = fieldValueObjectLength;
-				rowIndex < params.minRowsNumber;
+				rowIndex < theInstance.minRowsNumber;
 				rowIndex++
 			){
 				//Init empty row
