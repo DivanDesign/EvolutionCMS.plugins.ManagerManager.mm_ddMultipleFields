@@ -1,6 +1,6 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.6.2 (2022-05-26)
+ * @version 2.7 (2022-05-26)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
@@ -363,7 +363,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 2.0 (2022-05-26)
+	 * @version 2.1 (2022-05-26)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
@@ -439,6 +439,36 @@ $.ddMM.mm_ddMultipleFields = {
 				}
 			);
 		}
+		
+		//Provide changes of column indexes to aliases
+		Object.keys(fieldValueObject).forEach(
+			(rowKey) =>
+			{
+				//Iterate over all columns params
+				theInstance.columns.forEach(
+					(
+						columnParams,
+						columnIndex
+					) =>
+					{
+						if (
+							//If column alias is not set as simple numeric index
+							columnParams.alias != columnIndex &&
+							//And the value for this column is not set by alias
+							typeof fieldValueObject[rowKey][columnParams.alias] == 'undefined' &&
+							//But set by index
+							typeof fieldValueObject[rowKey][columnIndex] != 'undefined'
+						){
+							//Save value by the new alias
+							fieldValueObject[rowKey][columnParams.alias] = fieldValueObject[rowKey][columnIndex];
+							
+							//And delete outdated by index
+							delete fieldValueObject[rowKey][columnIndex];
+						}
+					}
+				);
+			}
+		);
 		
 		var fieldValueObjectLength = Object.keys(fieldValueObject).length;
 		
