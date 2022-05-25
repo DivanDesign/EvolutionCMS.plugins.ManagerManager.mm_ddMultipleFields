@@ -72,6 +72,11 @@ Type of TV must be `textarea`.
 	* Valid values: `string`
 	* Default value: `''`
 	
+* `$params->columns[i]['alias']`
+	* Desctription: An unique column alias. If empty, just numeric index will be used.
+	* Valid values: `string`
+	* Default value: —
+	
 * `$params->columns[i]['width']`
 	* Desctription: Column width, px.
 	* Valid values: `integer`
@@ -158,18 +163,18 @@ The widget saves value to a TV as JSON object with the following structure:
 {
 	"1590412453247": {
 		"0": "First row, first column value",
-		"1": "First row, second column value"
+		"customAlias": "First row, second column value"
 	},
 	"1590412497589": {
 		"0": "Second row, first column value",
-		"1": "Second row, Second column value"
+		"customAlias": "Second row, Second column value"
 	}
 }
 ```
 
 Where:
 * `1590412453247`, `1590412497589` — the unique auto generated row IDs (JS `(new Date).getTime()` is used while creating rows).
-* `0`, `1` — column numbers.
+* `0`, `customAlias` — column index or alias (if set).
 
 Rows objects with empty column values will not be saved.
 If all columns and all rows are empty, an empty string (`''`) will be saved instead of an empty JSON ojbect (`'{}'`).
@@ -213,6 +218,49 @@ mm_ddMultipleFields([
 		]
 	]
 ]);
+```
+
+
+### Using column aliases (`$params->columns[i]['alias']`)
+
+```php
+mm_ddMultipleFields([
+	'fields' => 'photos',
+	'columns' => [
+		[
+			'type' => 'image',
+			'title' => 'Photo',
+			'alias' => 'src'
+		],
+		[
+			'type' => 'text',
+			'title' => 'Title'
+			'alias' => 'alt'
+		],
+		//In the same time we can use columns without aliases, numeric index will be used in this case
+		[
+			'type' => 'textarea'
+			'title' => 'Notes'
+		]
+	]
+]);
+```
+
+Will be save something like this:
+
+```json
+{
+	"1590412453247": {
+		"src": "assets/images/ElonMusk.jpg",
+		"alt": "Elon Reeve Musk",
+		"2": "Business magnate and investor"
+	},
+	"1590412497589": {
+		"src": "assets/images/YuryDud.jpg",
+		"alt": "Yury Aleksandrovich Dud",
+		"2": "Russian journalist and YouTuber"
+	}
+}
 ```
 
 
