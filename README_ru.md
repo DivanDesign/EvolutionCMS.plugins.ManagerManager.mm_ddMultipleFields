@@ -17,10 +17,7 @@
 * [(MODX)EvolutionCMS.plugins.ManagerManager](https://code.divandesign.ru/modx/managermanager) >= 0.7
 
 
-## Документация
-
-
-### Установка
+## Установка
 
 Для установки распакуйте архив в `/assets/plungins/managermanager/widgets/ddmultiplefields/`.
 
@@ -34,7 +31,7 @@
 Тип TV, к которой применяется виджет, должен быть `textarea`.
 
 
-### Описание параметров
+## Описание параметров
 
 * `$params`
 	* Описание: Параметры, используется стиль именованных параметров.
@@ -147,13 +144,13 @@
 	* **Required**
 
 
-### События CMS
+## События CMS
 
 * `OnDocFormPrerender`
 * `OnDocFormRender`
 
 
-### Формат вывода
+## Формат вывода
 
 Виджет сохраняет значение в TV в виде объекта JSON со следующей структурой:
 
@@ -180,10 +177,10 @@
 Настоятельно рекомендуется использовать [(MODX)EvolutionCMS.snippets.ddGetMultipleField](https://code.divandesign.ru/modx/ddgetmultiplefield) >= 3.5 для вывода TV на сайте.
 
 
-### Примеры
+## Примеры
 
 
-#### Сделать возможность добавления нескольких изобрежний в TV `someImages`
+### Сделать возможность добавления нескольких изобрежний в TV `someImages`
 
 Создаём TV `someImages`, выставляем тип `textarea`.
 
@@ -200,7 +197,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### Создать 2 колонки: изображения и заголовки
+### Создать 2 колонки: изображения и заголовки
 
 ```php
 mm_ddMultipleFields([
@@ -219,7 +216,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### Таблица контактов сотрудников
+### Таблица контактов сотрудников
 
 Создаём TV `employees`, выставляем тип `textarea`.
 
@@ -251,7 +248,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### Колонка типа `<select>`
+### Колонка типа `<select>`
 
 ```php
 mm_ddMultipleFields([

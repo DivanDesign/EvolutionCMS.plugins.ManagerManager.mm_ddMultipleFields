@@ -17,10 +17,7 @@ Capabilities:
 * [(MODX)EvolutionCMS.plugins.ManagerManager](https://code.divandesign.biz/modx/managermanager) >= 0.7
 
 
-## Documentation
-
-
-### Installation
+## Installation
 
 To install you must unzip the archive to `/assets/plungins/managermanager/widgets/ddmultiplefields/`.
 
@@ -34,7 +31,7 @@ You may also read this documentation:
 Type of TV must be `textarea`.
 
 
-### Parameters description
+## Parameters description
 
 * `$params`
 	* Desctription: Parameters, the pass-by-name style is used.
@@ -147,13 +144,13 @@ Type of TV must be `textarea`.
 	* **Required**
 
 
-### CMS events
+## CMS events
 
 * `OnDocFormPrerender`
 * `OnDocFormRender`
 
 
-### Output format
+## Output format
 
 The widget saves value to a TV as JSON object with the following structure:
 
@@ -180,10 +177,10 @@ If all columns and all rows are empty, an empty string (`''`) will be saved inst
 It is strongly recommend to use [(MODX)EvolutionCMS.snippets.ddGetMultipleField](https://code.divandesign.biz/modx/ddgetmultiplefield) >= 3.5 for rendering TVs on site.
 
 
-### Examples
+## Examples
 
 
-#### Make the TV `someImages` available for adding several number of images
+### Make the TV `someImages` available for adding several number of images
 
 Create the TV `someImages`, set it's type equal to `textarea`.
 
@@ -200,7 +197,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### Create 2 columns: images with titles
+### Create 2 columns: images with titles
 
 ```php
 mm_ddMultipleFields([
@@ -219,7 +216,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### Table of employees contacts
+### Table of employees contacts
 
 Create the TV `employees`, set it's type equal to `textarea`.
 
@@ -251,7 +248,7 @@ mm_ddMultipleFields([
 ```
 
 
-#### `<select>` column type
+### `<select>` column type
 
 ```php
 mm_ddMultipleFields([
