@@ -1,12 +1,12 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.5.9 (2021-10-04)
+ * @version 2.5.10 (2022-05-25)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
  * @uses jQuery.ddMM 1.1.2
  * 
- * @copyright 2013–2021 [DD Group]{@link https://DivanDesign.biz }
+ * @copyright 2013–2022 [DD Group]{@link https://DivanDesign.biz }
  */
 
 (function($){
@@ -85,7 +85,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateTv
-	 * @version 4.3.1 (2020-05-26)
+	 * @version 4.3.2 (2022-05-25)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -118,23 +118,23 @@ $.ddMM.mm_ddMultipleFields = {
 				//Перебираем все колонки, закидываем значения в массив
 				$row
 					.find('.ddMultipleField_row_col_field')
-					.each(function(columnKey){
+					.each(function(columnIndex){
 						//Если колонка типа richtext
 						if (
 							_this
 								.instances[params.instanceId]
-								.columns[columnKey]
+								.columns[columnIndex]
 								.type
 							==
 							'richtext'
 						){
 							//Сохраняем значение поля в объект
-							columnValuesObject[columnKey] =	$.trim(
+							columnValuesObject[columnIndex] = $.trim(
 								$(this).html()
 							);
 						}else{
 							//Сохраняем значение поля в объект
-							columnValuesObject[columnKey] = $.trim(
+							columnValuesObject[columnIndex] = $.trim(
 								$(this).val()
 							);
 						}
@@ -143,7 +143,7 @@ $.ddMM.mm_ddMultipleFields = {
 						if (isRowEmpty){
 							//Depends on this column value length
 							isRowEmpty =
-								columnValuesObject[columnKey].length ==
+								columnValuesObject[columnIndex].length ==
 								0
 							;
 						}
@@ -523,7 +523,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createRow
-	 * @version 6.0.1 (2020-05-25)
+	 * @version 6.0.2 (2022-05-25)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
@@ -588,19 +588,22 @@ $.ddMM.mm_ddMultipleFields = {
 		//Перебираем колонки
 		$.each(
 			_this.instances[params.instanceId].columns,
-			function(key){
-				if (!params.rowValue[key]){
-					params.rowValue[key] = '';
+			function(
+				columnIndex,
+				columnParams
+			){
+				if (!params.rowValue[columnIndex]){
+					params.rowValue[columnIndex] = '';
 				}
 				
 				var $col = _this.createColumn({$fieldRow: $fieldRow});
 				
 				//Если текущая колонка является изображением
-				if(_this.instances[params.instanceId].columns[key].type == 'image'){
+				if(columnParams.type == 'image'){
 					$field = _this.createFieldText({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 					
@@ -621,11 +624,11 @@ $.ddMM.mm_ddMultipleFields = {
 						)
 					;
 				//Если текущая колонка является файлом
-				}else if(_this.instances[params.instanceId].columns[key].type == 'file'){
+				}else if(columnParams.type == 'file'){
 					$field = _this.createFieldText({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 					
@@ -641,43 +644,43 @@ $.ddMM.mm_ddMultipleFields = {
 						)
 					;
 				//Если селект
-				}else if(_this.instances[params.instanceId].columns[key].type == 'select'){
+				}else if(columnParams.type == 'select'){
 					_this.createFieldSelect({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						data: _this.instances[params.instanceId].columns[key].data,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						data: columnParams.data,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 				//Если дата
-				}else if(_this.instances[params.instanceId].columns[key].type == 'date'){
+				}else if(columnParams.type == 'date'){
 					_this.createFieldDate({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
 						$fieldCol: $col
 					});
 				//Если textarea
-				}else if(_this.instances[params.instanceId].columns[key].type == 'textarea'){
+				}else if(columnParams.type == 'textarea'){
 					_this.createFieldTextarea({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 				//Если richtext
-				}else if(_this.instances[params.instanceId].columns[key].type == 'richtext'){
+				}else if(columnParams.type == 'richtext'){
 					_this.createFieldRichtext({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 				//По дефолту делаем текстовое поле
 				}else{
 					_this.createFieldText({
-						value: params.rowValue[key],
-						title: _this.instances[params.instanceId].columns[key].title,
-						width: _this.instances[params.instanceId].columns[key].width,
+						value: params.rowValue[columnIndex],
+						title: columnParams.title,
+						width: columnParams.width,
 						$fieldCol: $col
 					});
 				}
