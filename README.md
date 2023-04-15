@@ -102,6 +102,12 @@ Type of TV must be `textarea`.
 	* Valid values: `string`
 	* Default value: == `$params->columns[i]['data'][i]['value']`
 	
+* `$params->columns[i]['defaultValue']`
+	* Desctription: Column default value.  
+		For now it is used only to check when deleting empty rows.
+	* Valid values: `string`
+	* Default value: `''`
+	
 * `$params->minRowsNumber`
 	* Desctription: Minimum number of rows.
 	* Valid values: `integer`
