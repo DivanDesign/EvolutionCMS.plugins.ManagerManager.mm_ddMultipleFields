@@ -3,9 +3,9 @@
  * (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields
  * @version 4.11 (2023-03-11)
  * 
- * @link https://code.divandesign.biz/modx/mm_ddmultiplefields
+ * @link https://code.divandesign.ru/modx/mm_ddmultiplefields
  * 
- * @copyright 2012–2023 DD Group {@link http://DivanDesign.biz }
+ * @copyright 2012–2023 DD Group {@link http://DivanDesign.ru }
  */
 
 function mm_ddMultipleFields($params){
