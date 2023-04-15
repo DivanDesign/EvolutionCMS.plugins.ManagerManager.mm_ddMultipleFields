@@ -1,7 +1,7 @@
 <?php
 /**
  * (MODX)EvolutionCMS.plugins.ManagerManager.mm_ddMultipleFields
- * @version 4.11 (2023-03-11)
+ * @version 4.12 (2023-04-16)
  * 
  * @link https://code.divandesign.ru/modx/mm_ddmultiplefields
  * 
