@@ -123,7 +123,7 @@ if ($_SESSION['mgrValidated']){
 			'widgetVersion' => '4.12',
 			'tinyMCE' => $temp[0]
 		],
-		'mergeAll' => false
+		'isCompletelyParsingEnabled' => false
 	]);
 }else{
 	echo file_get_contents(
