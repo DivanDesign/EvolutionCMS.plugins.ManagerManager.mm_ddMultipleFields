@@ -1,11 +1,11 @@
 <?php
-//Kill them all
+// Kill them all
 $_GET = $_POST = $_REQUEST = [];
 
-//Root dir
+// Root dir
 $richtextIncludeDirectory = '../../../../../../';
 
-//Define MGR_DIR
+// Define MGR_DIR
 if (file_exists(
 	$richtextIncludeDirectory .
 	'assets/cache/siteManager.php'
@@ -27,7 +27,7 @@ $richtextIncludeDirectory .=
 	'/'
 ;
 
-//Config
+// Config
 $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'] = '/';
 require_once(
 	$richtextIncludeDirectory .
@@ -44,17 +44,17 @@ if ($_SESSION['mgrValidated']){
 		'IN_MANAGER_MODE',
 		true
 	);
-	//Setup the MODx API
+	// Setup the MODx API
 	define(
 		'MODX_API_MODE',
 		true
 	);
-	//Initiate a new document parser
+	// Initiate a new document parser
 	require_once(
 		$richtextIncludeDirectory .
 		'includes/document.parser.class.inc.php'
 	);
-	//For TinyMCE
+	// For TinyMCE
 	require_once(
 		$richtextIncludeDirectory .
 		'includes/extenders/manager.api.class.inc.php'
@@ -67,16 +67,16 @@ if ($_SESSION['mgrValidated']){
 	
 	$modx = new DocumentParser;
 	
-	//Provide the MODx DBAPI
+	// Provide the MODx DBAPI
 	$modx->db->connect();
-	//Provide the $modx->documentMap and user settings
+	// Provide the $modx->documentMap and user settings
 	$modx->getSettings();
 	
-	//For TinyMCE
+	// For TinyMCE
 	$settings = $modx->config;
-	//For TinyMCE
+	// For TinyMCE
 	$modx->getManagerApi();
-	//For TinyMCE
+	// For TinyMCE
 	$modx->manager->action = 27;
 	
 	$mmDir = 'assets/plugins/managermanager/';
@@ -85,7 +85,7 @@ if ($_SESSION['mgrValidated']){
 		'widgets/ddmultiplefields/richtext/'
 	;
 	
-	//Include the ddTools library
+	// Include the ddTools library
 	require_once(
 		$modx->getConfig('base_path') .
 		'assets/libs/ddTools/modx.ddtools.class.php'

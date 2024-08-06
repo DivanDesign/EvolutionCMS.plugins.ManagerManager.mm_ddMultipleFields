@@ -1,34 +1,34 @@
 /**
  * jQuery.ddMM.mm_ddMultipleFields
- * @version 2.8 (2023-04-16)
+ * @version 2.8.1 (2024-08-06)
  * 
  * @uses jQuery 1.9.1
  * @uses jQuery.ddTools 1.8.1
  * @uses jQuery.ddMM 1.1.2
  * 
- * @copyright 2013–2023 [DD Group]{@link https://DivanDesign.ru }
+ * @copyright 2013–2024 https://Ronef.me
  */
 
 (function($){
 $.ddMM.mm_ddMultipleFields = {
 	defaults: {
-		//Колонки
+		// Колонки
 		columns: [
 			{
 				type: 'text'
 			}
 		],
-		//Стиль превьюшек
+		// Стиль превьюшек
 		previewStyle: '',
-		//Минимальное количество строк
+		// Минимальное количество строк
 		minRowsNumber: 0,
-		//Максимальное количество строк
+		// Максимальное количество строк
 		maxRowsNumber: 0,
 		
-		//Backward compatibility
-		//Разделитель строк
+		// Backward compatibility
+		// Разделитель строк
 		rowDelimiter: '||',
-		//Разделитель колонок
+		// Разделитель колонок
 		colDelimiter: '::'
 	},
 	/**
@@ -61,7 +61,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method updateField
-	 * @version 3.0 (2020-05-22)
+	 * @version 3.0.1 (2024-08-06)
 	 * 
 	 * @desc Обновляет мульти-поле, берёт значение из оригинального поля.
 	 * 
@@ -73,21 +73,21 @@ $.ddMM.mm_ddMultipleFields = {
 	updateField: function(params){
 		var _this = this;
 		
-		//Если есть текущее поле
+		// Если есть текущее поле
 		if (_this.instances[params.instanceId].$currentField){
-			//Задаём значение текущему полю (берём у оригинального поля), запускаем событие изменения
+			// Задаём значение текущему полю (берём у оригинального поля), запускаем событие изменения
 			_this.instances[params.instanceId].$currentField
 				.val($.trim(_this.instances[params.instanceId].$originalField.val()))
 				.trigger('change.ddEvents')
 			;
-			//Забываем текущее поле (ибо уже обработали)
+			// Забываем текущее поле (ибо уже обработали)
 			_this.instances[params.instanceId].$currentField = false;
 		}
 	},
 	
 	/**
 	 * @method updateTv
-	 * @version 4.5 (2023-04-16)
+	 * @version 4.5.1 (2024-08-06)
 	 * 
 	 * @desc Обновляет оригинальное поле TV, собирая данные по мульти-полям.
 	 * 
@@ -99,11 +99,11 @@ $.ddMM.mm_ddMultipleFields = {
 	updateTv: function(params){
 		var
 			_this = this,
-			//Object that will be saved to the field
+			// Object that will be saved to the field
 			fieldValueObject = {}
 		;
 		
-		//Перебираем все строки
+		// Перебираем все строки
 		_this
 			.instances[params.instanceId]
 			.$table
@@ -111,34 +111,34 @@ $.ddMM.mm_ddMultipleFields = {
 			.each(function(){
 				var
 					$row = $(this),
-					//Get row ID from the `data-dd-row-id` attr
+					// Get row ID from the `data-dd-row-id` attr
 					rowId = $row.data('ddRowId'),
 					columnValuesObject = {},
 					isRowEmpty = true
 				;
 				
-				//Перебираем все колонки, закидываем значения в массив
+				// Перебираем все колонки, закидываем значения в массив
 				$row
 					.find('.ddMultipleField_row_col_field')
 					.each(function(columnIndex){
 						var columnParams = _this.instances[params.instanceId].columns[columnIndex];
 						
-						//Если колонка типа richtext
+						// Если колонка типа richtext
 						if (columnParams.type == 'richtext'){
-							//Сохраняем значение поля в объект
+							// Сохраняем значение поля в объект
 							columnValuesObject[columnParams.alias] = $.trim(
 								$(this).html()
 							);
 						}else{
-							//Сохраняем значение поля в объект
+							// Сохраняем значение поля в объект
 							columnValuesObject[columnParams.alias] = $.trim(
 								$(this).val()
 							);
 						}
 						
-						//If row is still marked as empty
+						// If row is still marked as empty
 						if (isRowEmpty){
-							//Depends on this column value length
+							// Depends on this column value length
 							isRowEmpty =
 								columnValuesObject[columnParams.alias] ==
 								columnParams.defaultValue
@@ -147,7 +147,7 @@ $.ddMM.mm_ddMultipleFields = {
 					})
 				;
 				
-				//Если значение было хоть в одной колонке из всех в этой строке
+				// Если значение было хоть в одной колонке из всех в этой строке
 				if (!isRowEmpty){
 					fieldValueObject[rowId] = columnValuesObject;
 				}
@@ -158,7 +158,7 @@ $.ddMM.mm_ddMultipleFields = {
 			fieldValueObject = 
 				JSON
 					.stringify(fieldValueObject)
-					//Decode some HTML entities
+					// Decode some HTML entities
 					.replace(
 						/&lt;/gi,
 						'<'
@@ -176,7 +176,7 @@ $.ddMM.mm_ddMultipleFields = {
 			fieldValueObject = '';
 		}
 		
-		//Записываем значение в оригинальное поле
+		// Записываем значение в оригинальное поле
 		_this
 			.instances[params.instanceId]
 			.$originalField
@@ -186,7 +186,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init
-	 * @version 4.5 (2023-04-16)
+	 * @version 4.5.1 (2024-08-06)
 	 * 
 	 * @desc Инициализация.
 	 * 
@@ -215,41 +215,41 @@ $.ddMM.mm_ddMultipleFields = {
 	init: function(theInstance){
 		var
 			_this = this,
-			//Шапка таблицы
+			// Шапка таблицы
 			tableHeaderHtml = '',
-			//По умолчанию без шапки
+			// По умолчанию без шапки
 			isTableHeaderDisplayed = false;
 		;
 		
-		//Provides backward compatibility
+		// Provides backward compatibility
 		theInstance.columnIdIndex = -1;
 		
-		//Перебираем колонки
+		// Перебираем колонки
 		$.each(
 			theInstance.columns,
 			function(
 				columnIndex,
 				columnObject
 			){
-				//If it is deprecated ID column
+				// If it is deprecated ID column
 				if (columnObject.type == 'id'){
 					theInstance.columnIdIndex = columnIndex;
 					
-					//Continue
+					// Continue
 					return true;
 				}
 				
-				//Prepare alias
+				// Prepare alias
 				if (typeof columnObject.alias == 'undefined'){
 					columnObject.alias = columnIndex;
 				}
 				
-				//Prepare default value
+				// Prepare default value
 				if (typeof columnObject.defaultValue == 'undefined'){
 					columnObject.defaultValue = '';
 				}
 				
-				//Prepare title
+				// Prepare title
 				if (!columnObject.title){
 					theInstance.columns[columnIndex].title = '';
 				}else{
@@ -261,50 +261,50 @@ $.ddMM.mm_ddMultipleFields = {
 					'</th>'
 				;
 				
-				//Prepare width
+				// Prepare width
 				if (!columnObject.width){
 					if (
-						//Preverious column exist
+						// Preverious column exist
 						$.isPlainObject(theInstance.columns[columnIndex - 1]) &&
 						theInstance.columns[columnIndex - 1].width
 					){
-						//Take from preverious column
+						// Take from preverious column
 						theInstance.columns[columnIndex].width = theInstance.columns[columnIndex - 1].width;
 					}else{
-						//Or by default
+						// Or by default
 						theInstance.columns[columnIndex].width = 180;
 					}
 				}
 				
-				//Prepare data
+				// Prepare data
 				if (!columnObject.data){
 					theInstance.columns[columnIndex].data = '';
 				}
 			}
 		);
 		
-		//If deprecated ID column exists
+		// If deprecated ID column exists
 		if (theInstance.columnIdIndex != -1){
-			//Remove it
+			// Remove it
 			theInstance.columns.splice(
 				theInstance.columnIdIndex,
 				1
 			);
 		}
 		
-		//Объект значения поля
+		// Объект значения поля
 		var fieldValueObject = _this.init_prepareFieldValueObject(theInstance);
 		
-		//Это поле нужно было только для инициализации
+		// Это поле нужно было только для инициализации
 		delete theInstance.value;
 		
-		//Инициализируем кнопки +
+		// Инициализируем кнопки +
 		theInstance.$addButtons = $();
 		
-		//Сохраняем экземпляр текущего объекта с правилами
+		// Сохраняем экземпляр текущего объекта с правилами
 		_this.instances[theInstance.id] = theInstance;
 		
-		//Делаем таблицу мульти-поля
+		// Делаем таблицу мульти-поля
 		theInstance.$table =
 			$(
 				'<table class="ddMultipleField" id="' +
@@ -338,7 +338,7 @@ $.ddMM.mm_ddMultipleFields = {
 			}
 		);
 		
-		//Добавляем возможность перетаскивания
+		// Добавляем возможность перетаскивания
 		theInstance.$table.sortable({
 			items: 'tr:has(td)',
 			handle: '.ddSortHandle',
@@ -368,7 +368,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method init_prepareFieldValueObject
-	 * @version 2.1 (2022-05-26)
+	 * @version 2.1.1 (2024-08-06)
 	 * 
 	 * @desc Инициализация → Подготовка объекта значений поля.
 	 * 
@@ -379,11 +379,11 @@ $.ddMM.mm_ddMultipleFields = {
 	init_prepareFieldValueObject: function(theInstance){
 		var
 			_this = this,
-			//Объект значения поля
+			// Объект значения поля
 			fieldValueObject = {}
 		;
 		
-		//If value is JSON object
+		// If value is JSON object
 		if (
 			$.trim(theInstance.value).substr(
 				0,
@@ -396,10 +396,10 @@ $.ddMM.mm_ddMultipleFields = {
 			}catch{
 				fieldValueObject = {};
 			}
-		//Bacward compatibility
+		// Bacward compatibility
 		}else{
 			var
-				//Разбиваем значение по строкам
+				// Разбиваем значение по строкам
 				rowValuesArray =
 					theInstance
 						.value
@@ -410,22 +410,22 @@ $.ddMM.mm_ddMultipleFields = {
 				rowValuesArray,
 				function(){
 					var
-						//Split by column
+						// Split by column
 						columnValuesArray = this.split(theInstance.colDelimiter),
-						//Generate row ID
+						// Generate row ID
 						rowId = _this.generateRowId()
 					;
 					
 					if (
-						//If deprecated ID column exists
+						// If deprecated ID column exists
 						theInstance.columnIdIndex != -1 &&
-						//And not empty
+						// And not empty
 						columnValuesArray[theInstance.columnIdIndex] != ''
 					){
 						rowId = columnValuesArray[theInstance.columnIdIndex];
 					}
 					
-					//Init row
+					// Init row
 					fieldValueObject[rowId] = {};
 					
 					$.each(
@@ -434,9 +434,9 @@ $.ddMM.mm_ddMultipleFields = {
 							colKey,
 							colValue
 						){
-							//If it is deprecated ID column
+							// If it is deprecated ID column
 							if (colKey != theInstance.columnIdIndex){
-								//Save column value
+								// Save column value
 								fieldValueObject[rowId][colKey] = colValue;
 							}
 						}
@@ -445,11 +445,11 @@ $.ddMM.mm_ddMultipleFields = {
 			);
 		}
 		
-		//Provide changes of column indexes to aliases
+		// Provide changes of column indexes to aliases
 		Object.keys(fieldValueObject).forEach(
 			(rowKey) =>
 			{
-				//Iterate over all columns params
+				// Iterate over all columns params
 				theInstance.columns.forEach(
 					(
 						columnParams,
@@ -457,17 +457,17 @@ $.ddMM.mm_ddMultipleFields = {
 					) =>
 					{
 						if (
-							//If column alias is not set as simple numeric index
+							// If column alias is not set as simple numeric index
 							columnParams.alias != columnIndex &&
-							//And the value for this column is not set by alias
+							// And the value for this column is not set by alias
 							typeof fieldValueObject[rowKey][columnParams.alias] == 'undefined' &&
-							//But set by index
+							// But set by index
 							typeof fieldValueObject[rowKey][columnIndex] != 'undefined'
 						){
-							//Save value by the new alias
+							// Save value by the new alias
 							fieldValueObject[rowKey][columnParams.alias] = fieldValueObject[rowKey][columnIndex];
 							
-							//And delete outdated by index
+							// And delete outdated by index
 							delete fieldValueObject[rowKey][columnIndex];
 						}
 					}
@@ -477,7 +477,7 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		var fieldValueObjectLength = Object.keys(fieldValueObject).length;
 		
-		//Проверяем на максимальное и минимальное количество строк
+		// Проверяем на максимальное и минимальное количество строк
 		if (
 			theInstance.maxRowsNumber &&
 			fieldValueObjectLength > theInstance.maxRowsNumber
@@ -509,7 +509,7 @@ $.ddMM.mm_ddMultipleFields = {
 				rowIndex < theInstance.minRowsNumber;
 				rowIndex++
 			){
-				//Init empty row
+				// Init empty row
 				fieldValueObject[rowIndex] = {};
 			}
 		}
@@ -519,7 +519,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method generateRowId
-	 * @version 1.1 (2020-05-25)
+	 * @version 1.1.1 (2024-08-06)
 	 * 
 	 * @desc Generates an uniquie ID for table row.
 	 * 
@@ -529,7 +529,7 @@ $.ddMM.mm_ddMultipleFields = {
 		return (
 			Date.now() +
 			'' +
-			//Get random number from 100 to 999
+			// Get random number from 100 to 999
 			Math.round(
 				(
 					Math.random() *
@@ -544,7 +544,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createRow
-	 * @version 6.0.3 (2022-05-25)
+	 * @version 6.0.4 (2024-08-06)
 	 * 
 	 * @desc Функция создания строки.
 	 * 
@@ -559,7 +559,7 @@ $.ddMM.mm_ddMultipleFields = {
 	createRow: function(params){
 		var	_this = this;
 		
-		//Defaults
+		// Defaults
 		params = $.extend(
 			{
 				rowId: _this.generateRowId(),
@@ -569,7 +569,7 @@ $.ddMM.mm_ddMultipleFields = {
 		);
 		
 		var
-			//Общее количество строк на данный момент
+			// Общее количество строк на данный момент
 			fieldRowsTotal =
 				_this
 					.instances[params.instanceId]
@@ -579,9 +579,9 @@ $.ddMM.mm_ddMultipleFields = {
 		;
 		
 		if (
-			//Если задано максимальное количество строк
+			// Если задано максимальное количество строк
 			_this.instances[params.instanceId].maxRowsNumber &&
-			//Проверяем превышает ли уже количество строк максимальное
+			// Проверяем превышает ли уже количество строк максимальное
 			fieldRowsTotal >= _this.instances[params.instanceId].maxRowsNumber
 		){
 			return;
@@ -606,7 +606,7 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		var $field;
 		
-		//Перебираем колонки
+		// Перебираем колонки
 		$.each(
 			_this.instances[params.instanceId].columns,
 			function(
@@ -619,7 +619,7 @@ $.ddMM.mm_ddMultipleFields = {
 				
 				var $col = _this.createColumn({$fieldRow: $fieldRow});
 				
-				//Если текущая колонка является изображением
+				// Если текущая колонка является изображением
 				if(columnParams.type == 'image'){
 					$field = _this.createFieldText({
 						value: params.rowValue[columnParams.alias],
@@ -633,7 +633,7 @@ $.ddMM.mm_ddMultipleFields = {
 						$fieldCol: $col
 					});
 					
-					//Create Attach browse button
+					// Create Attach browse button
 					$('<input class="ddAttachButton" type="button" value="Вставить" />')
 						.insertAfter($field)
 						.on(
@@ -644,7 +644,7 @@ $.ddMM.mm_ddMultipleFields = {
 							}
 						)
 					;
-				//Если текущая колонка является файлом
+				// Если текущая колонка является файлом
 				}else if(columnParams.type == 'file'){
 					$field = _this.createFieldText({
 						value: params.rowValue[columnParams.alias],
@@ -653,7 +653,7 @@ $.ddMM.mm_ddMultipleFields = {
 						$fieldCol: $col
 					});
 					
-					//Create Attach browse button
+					// Create Attach browse button
 					$('<input class="ddAttachButton" type="button" value="Вставить" />')
 						.insertAfter($field)
 						.on(
@@ -664,7 +664,7 @@ $.ddMM.mm_ddMultipleFields = {
 							}
 						)
 					;
-				//Если селект
+				// Если селект
 				}else if(columnParams.type == 'select'){
 					_this.createFieldSelect({
 						value: params.rowValue[columnParams.alias],
@@ -673,14 +673,14 @@ $.ddMM.mm_ddMultipleFields = {
 						width: columnParams.width,
 						$fieldCol: $col
 					});
-				//Если дата
+				// Если дата
 				}else if(columnParams.type == 'date'){
 					_this.createFieldDate({
 						value: params.rowValue[columnParams.alias],
 						title: columnParams.title,
 						$fieldCol: $col
 					});
-				//Если textarea
+				// Если textarea
 				}else if(columnParams.type == 'textarea'){
 					_this.createFieldTextarea({
 						value: params.rowValue[columnParams.alias],
@@ -688,7 +688,7 @@ $.ddMM.mm_ddMultipleFields = {
 						width: columnParams.width,
 						$fieldCol: $col
 					});
-				//Если richtext
+				// Если richtext
 				}else if(columnParams.type == 'richtext'){
 					_this.createFieldRichtext({
 						value: params.rowValue[columnParams.alias],
@@ -696,7 +696,7 @@ $.ddMM.mm_ddMultipleFields = {
 						width: columnParams.width,
 						$fieldCol: $col
 					});
-				//По дефолту делаем текстовое поле
+				// По дефолту делаем текстовое поле
 				}else{
 					_this.createFieldText({
 						value: params.rowValue[columnParams.alias],
@@ -710,22 +710,22 @@ $.ddMM.mm_ddMultipleFields = {
 		
 		var $lastCol = _this.createColumn({$fieldRow: $fieldRow});
 		
-		//Create DeleteButton
+		// Create DeleteButton
 		_this.createButtonDeleteRow({
 			instanceId: params.instanceId,
 			$fieldCol: $lastCol
 		});
 		
-		//Create addButton
+		// Create addButton
 		_this.createButtonAddRow({
 			instanceId: params.instanceId,
 			$fieldCol: $lastCol
 		});
 		
 		if (
-			//Если задано максимальное количество строк
+			// Если задано максимальное количество строк
 			_this.instances[params.instanceId].maxRowsNumber &&
-			//Если будет равно максимуму при создании этого поля
+			// Если будет равно максимуму при создании этого поля
 			fieldRowsTotal + 1 == _this.instances[params.instanceId].maxRowsNumber
 		){
 			_this.instances[params.instanceId].$addButtons.attr(
@@ -734,7 +734,7 @@ $.ddMM.mm_ddMultipleFields = {
 			);
 		}
 		
-		//Специально для полей, содержащих изображения необходимо инициализировать
+		// Специально для полей, содержащих изображения необходимо инициализировать
 		$fieldRow
 			.find('.ddMultipleField_row_col:has(.ddMultipleField_row_col_field_image) .ddMultipleField_row_col_field')
 			.trigger('change.ddEvents')
@@ -763,7 +763,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createButtonDeleteRow
-	 * @version 4.0 (2018-05-25)
+	 * @version 4.0.1 (2024-08-06)
 	 * 
 	 * @desc Creates a delete button.
 	 * 
@@ -781,7 +781,7 @@ $.ddMM.mm_ddMultipleFields = {
 			.on(
 				'click',
 				function(event){
-					//Проверяем на минимальное количество строк
+					// Проверяем на минимальное количество строк
 					if (
 						_this.instances[params.instanceId].minRowsNumber &&
 						_this.instances[params.instanceId].$table.find('.ddMultipleField_row').length <= _this.instances[params.instanceId].minRowsNumber
@@ -795,13 +795,13 @@ $.ddMM.mm_ddMultipleFields = {
 						$table = $this.parents('.ddMultipleField:first')*/
 					;
 					
-					//Отчистим значения полей
+					// Отчистим значения полей
 					$par
 						.find('.ddMultipleField_row_col_field')
 						.val('')
 					;
 					
-					//Если больше одной строки, то можно удалить текущую строчку
+					// Если больше одной строки, то можно удалить текущую строчку
 					if ($par.siblings('.ddMultipleField_row').length > 0){
 						$par.animate(
 							{
@@ -809,10 +809,10 @@ $.ddMM.mm_ddMultipleFields = {
 							},
 							300,
 							function(){
-								//Сносим
+								// Сносим
 								$par.remove();
 								
-								//При любом удалении показываем кнопки добавления
+								// При любом удалении показываем кнопки добавления
 								_this
 									.instances[params.instanceId]
 									.$addButtons
@@ -832,7 +832,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createButtonAddRow
-	 * @version 5.0 (2020-05-25)
+	 * @version 5.0.1 (2024-08-06)
 	 * 
 	 * @desc Функция создания кнопки +, вызывается при инициализации.
 	 * 
@@ -845,7 +845,7 @@ $.ddMM.mm_ddMultipleFields = {
 	createButtonAddRow: function(params){
 		var
 			_this = this,
-			//Вешаем на кнопку создание новой строки
+			// Вешаем на кнопку создание новой строки
 			$button =
 				$('<button class="fa fa-plus btn ddAddButton"></button>')
 					.appendTo(params.$fieldCol)
@@ -873,7 +873,7 @@ $.ddMM.mm_ddMultipleFields = {
 					)
 		;
 		
-		//Сохраняем в коллекцию
+		// Сохраняем в коллекцию
 		_this
 			.instances[params.instanceId]
 			.$addButtons =
@@ -919,7 +919,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createFieldDate
-	 * @version 3.0 (2020-05-25)
+	 * @version 3.0.1 (2024-08-06)
 	 * 
 	 * @desc Creates a date field.
 	 * 
@@ -931,7 +931,7 @@ $.ddMM.mm_ddMultipleFields = {
 	 * @returns {jQuery}
 	 */
 	createFieldDate: function(params){
-		//name нужен для DatePicker`а
+		// name нужен для DatePicker`а
 		var
 			$field =
 				$(
@@ -1068,7 +1068,7 @@ $.ddMM.mm_ddMultipleFields = {
 	
 	/**
 	 * @method createFieldImage
-	 * @version 4.0 (2018-05-25)
+	 * @version 4.0.1 (2024-08-06)
 	 * 
 	 * @desc Creates a image field.
 	 * 
@@ -1103,7 +1103,7 @@ $.ddMM.mm_ddMultipleFields = {
 			.on(
 				'load.ddEvents',
 				function(){
-					//Удаление превьюшки, оставленная от виджета showimagetvs
+					// Удаление превьюшки, оставленная от виджета showimagetvs
 					$(
 						'#' +
 						params.instanceId +
@@ -1115,7 +1115,7 @@ $.ddMM.mm_ddMultipleFields = {
 			)
 		;
 		
-		//Находим поле, привязываем события
+		// Находим поле, привязываем события
 		$(
 			'.ddMultipleField_row_col_field',
 			params.$fieldCol
@@ -1140,9 +1140,9 @@ $.ddMM.mm_ddMultipleFields = {
 						url
 					;
 					
-					//If field not empty
+					// If field not empty
 					if (url != ''){
-						//Show preview
+						// Show preview
 						$this
 							.siblings('.ddMultipleField_row_col_field_image')
 							.show()
@@ -1153,7 +1153,7 @@ $.ddMM.mm_ddMultipleFields = {
 							)
 						;
 					}else{
-						//Hide preview
+						// Hide preview
 						$this
 							.siblings('.ddMultipleField_row_col_field_image')
 							.hide()
@@ -1232,7 +1232,7 @@ $.ddMM.mm_ddMultipleFields = {
 
 /**
  * jQuery.fn.mm_ddMultipleFields
- * @version 2.0.6 (2020-05-25)
+ * @version 2.0.7 (2024-08-06)
  * 
  * @desc Делает мультиполя.
  * 
@@ -1246,12 +1246,12 @@ $.ddMM.mm_ddMultipleFields = {
  * @param [params.rowDelimiter='||'] {string} — Разделитель строк.
  * @param [params.colDelimiter='::'] {string} — Разделитель колонок.
  * 
- * @copyright 2013–2020 [DD Group]{@link https://DivanDesign.ru }
+ * @copyright 2013–2024 https://Ronef.me
  */
 $.fn.mm_ddMultipleFields = function(params){
 	var _this = $.ddMM.mm_ddMultipleFields;
 	
-	//Обрабатываем параметры
+	// Обрабатываем параметры
 	params = $.extend(
 		{},
 		_this.defaults,
@@ -1268,21 +1268,21 @@ $.fn.mm_ddMultipleFields = function(params){
 	);
 	
 	return $(this).each(function(){
-		//Attach new load event
+		// Attach new load event
 		$(this)
 			.on(
 				'load.ddEvents',
 				function(event){
-					//Оригинальное поле
+					// Оригинальное поле
 					var
 						$this = $(this),
-						//id оригинального поля
+						// id оригинального поля
 						id = $this.attr('id')
 					;
 					
-					//Проверим на существование (возникали какие-то непонятные варианты, при которых два раза вызов был)
+					// Проверим на существование (возникали какие-то непонятные варианты, при которых два раза вызов был)
 					if (!_this.instances[id]){
-						//Скрываем оригинальное поле
+						// Скрываем оригинальное поле
 						$this
 							.removeClass('imageField')
 							.off('.mm_widget_showimagetvs')
@@ -1290,24 +1290,24 @@ $.fn.mm_ddMultipleFields = function(params){
 							.hide()
 						;
 						
-						//Назначаем обработчик события при изменении (необходимо для того, чтобы после загрузки фотки адрес вставлялся в нужное место)
+						// Назначаем обработчик события при изменении (необходимо для того, чтобы после загрузки фотки адрес вставлялся в нужное место)
 						$this.on(
 							'change.ddEvents',
 							function(){
-								//Обновляем текущее мульти-поле
+								// Обновляем текущее мульти-поле
 								_this.updateField({
 									instanceId: $this.attr('id')
 								});
 							}
 						);
 						
-						//Если это файл или изображение, cкрываем оригинальную кнопку
+						// Если это файл или изображение, cкрываем оригинальную кнопку
 						$this
 							.next('input[type=button]')
 							.hide()
 						;
 						
-						//Создаём мульти-поле
+						// Создаём мульти-поле
 						_this.init(
 							$.extend(
 								{
@@ -1327,7 +1327,7 @@ $.fn.mm_ddMultipleFields = function(params){
 	});
 };
 
-//On document.ready
+// On document.ready
 $(function(){
 	if (typeof(SetUrl) == 'undefined'){
 		lastImageCtrl = '';
@@ -1442,12 +1442,12 @@ $(function(){
 			}
 		};
 	}else{
-		//For old MODX versions
+		// For old MODX versions
 		if (typeof(SetUrlChange) == 'undefined'){
-			//Copy the existing Image browser SetUrl function
+			// Copy the existing Image browser SetUrl function
 			var oldSetUrl = SetUrl;
 			
-			//Redefine it to also tell the preview to update
+			// Redefine it to also tell the preview to update
 			SetUrl = function(
 				url,
 				width,
@@ -1474,7 +1474,7 @@ $(function(){
 		}
 	}
 	
-	//Сабмит главной формы
+	// Сабмит главной формы
 	$.ddMM.$mutate.on(
 		'submit',
 		function(){

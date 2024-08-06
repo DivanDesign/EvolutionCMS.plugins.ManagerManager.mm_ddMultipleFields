@@ -6,7 +6,7 @@ $(function(){
 			window
 				.$ddMultipleField_row_col_field
 				.html()
-				//Decode some HTML entities
+				// Decode some HTML entities
 				.replace(
 					/&lt;/gi,
 					'<'

@@ -9,12 +9,12 @@
  */
 
 function mm_ddMultipleFields($params){
-	//For backward compatibility
+	// For backward compatibility
 	if (
 		!is_array($params) &&
 		!is_object($params)
 	){
-		//Convert ordered list of params to named
+		// Convert ordered list of params to named
 		$params = \ddTools::orderedParamsToNamed([
 			'paramsList' => func_get_args(),
 			'compliance' => [
@@ -35,7 +35,7 @@ function mm_ddMultipleFields($params){
 		]);
 	}
 	
-	//Defaults
+	// Defaults
 	$params = (object) array_merge(
 		[
 			'fields' => '',
@@ -50,7 +50,7 @@ function mm_ddMultipleFields($params){
 			'previewHeight' => 100,
 			'roles' => '',
 			'templates' => '',
-			//Deprecated
+			// Deprecated
 			'rowDelimiter' => '||',
 			'colDelimiter' => '::',
 			'columnsTitles' => '',
@@ -103,7 +103,7 @@ function mm_ddMultipleFields($params){
 			),
 			'html',
 			'jQuery.ddMM.mm_ddMultipleFields',
-			'2.8'
+			'2.8.1'
 		);
 		
 		$e->output($output);
@@ -121,16 +121,16 @@ function mm_ddMultipleFields($params){
 			return;
 		}
 		
-		//Колонки, заданные как «field», теперь их нужно будет заменить на «image» и «file» соответственно
+		// Колонки, заданные как «field», теперь их нужно будет заменить на «image» и «file» соответственно
 		$columns_fieldKeyIndex = [];
 		
-		//Old columns format backward compatibility
+		// Old columns format backward compatibility
 		if (!is_array($params->columns)){
 			$columnsTemp = makeArray($params->columns);
 			$params->columnsTitles = makeArray($params->columnsTitles);
 			$params->columnsWidth = makeArray($params->columnsWidth);
 			
-			//Prepare data
+			// Prepare data
 			if ($params->columnsData){
 				$columnsDataTemp = explode(
 					'||',
@@ -142,7 +142,7 @@ function mm_ddMultipleFields($params){
 					$columnsDataTemp as
 					$dataItem
 				){
-					//For backward compatibility '[["Value 1", "Title 1"], ["Value 2"]]' → '[{"value" => "Value 1", "title" => "Title 1"}, {"value" => "Value 2"}]'
+					// For backward compatibility '[["Value 1", "Title 1"], ["Value 2"]]' → '[{"value" => "Value 1", "title" => "Title 1"}, {"value" => "Value 2"}]'
 					if ($dataItem != ''){
 						$dataItemTemp = json_decode(
 							$dataItem,
@@ -150,7 +150,7 @@ function mm_ddMultipleFields($params){
 						);
 						$dataItem = [];
 						
-						//Build list
+						// Build list
 						foreach (
 							$dataItemTemp as
 							$dataItem_item_index =>
@@ -159,7 +159,7 @@ function mm_ddMultipleFields($params){
 							$dataItem[$dataItem_item_index] = [];
 							$dataItem[$dataItem_item_index]['value'] = $dataItem_item_value[0];
 							
-							//Title
+							// Title
 							if (isset($dataItem_item_value[1])){
 								$dataItem[$dataItem_item_index]['title'] = $dataItem_item_value[1];
 							}
@@ -181,7 +181,7 @@ function mm_ddMultipleFields($params){
 				$index =>
 				$value
 			){
-				//“field” value compatibility
+				// “field” value compatibility
 				if ($value == 'field'){
 					$columns_fieldKeyIndex[] = $index;
 				}
@@ -202,14 +202,14 @@ function mm_ddMultipleFields($params){
 			}
 		}
 		
-		//Default value for columns
+		// Default value for columns
 		if (empty($params->columns)){
 			$params->columns = [
 				['type' => 'text']
 			];
 		}
 		
-		//Стиль превью изображения
+		// Стиль превью изображения
 		$previewStyle =
 			'max-width:' .
 			$params->previewWidth .
@@ -227,12 +227,12 @@ function mm_ddMultipleFields($params){
 			$params->fields as
 			$field
 		){
-			//For backward compatibility
+			// For backward compatibility
 			if (
 				$field['type'] == 'image' ||
 				$field['type'] == 'file'
 			){
-				//Проходимся по всем колонкам «field» и заменяем на соответствующий тип
+				// Проходимся по всем колонкам «field» и заменяем на соответствующий тип
 				foreach(
 					$columns_fieldKeyIndex as
 					$index
@@ -258,7 +258,7 @@ $j.ddMM.fields.' . $field['name'] . '.$elem.mm_ddMultipleFields({
 ';
 		}
 		
-		//Поругаемся
+		// Поругаемся
 		if (!empty($columns_fieldKeyIndex)){
 			$modx->logEvent(
 				1,

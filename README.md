@@ -199,7 +199,7 @@ Create the TV `someImages`, set it's type equal to `textarea`.
 mm_ddMultipleFields([
 	'fields' => 'someImages',
 	'columns' => [
-		//Only one column
+		// Only one column
 		[
 			'type' => 'image'
 		]
@@ -243,7 +243,7 @@ mm_ddMultipleFields([
 			'title' => 'Title'
 			'alias' => 'alt'
 		],
-		//In the same time we can use columns without aliases, numeric index will be used in this case
+		// In the same time we can use columns without aliases, numeric index will be used in this case
 		[
 			'type' => 'textarea'
 			'title' => 'Notes'
@@ -294,9 +294,9 @@ mm_ddMultipleFields([
 			'width' => 200
 		]
 	],
-	//Minimum 2 employee is required
+	// Minimum 2 employee is required
 	'minRowsNumber' => 2,
-	//And maximum 10
+	// And maximum 10
 	'maxRowsNumber' => 10
 ]);
 ```
